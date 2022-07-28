@@ -695,7 +695,7 @@ class PermissionOverwriteKey:
     def __update(self, channel: GuildChannel, /) -> None:
         self._channel = channel
         guild = channel.guild
-        if isinstance(self.type, Role):
+        if self.type is Role:
             self.__target = guild.get_role(self.id)
         else:
             self.__target = guild.get_member(self.id)
@@ -730,7 +730,7 @@ class PermissionOverwriteKey:
         guild = self._channel.guild
         if self.__target is not None:
             return self.__target
-        if isinstance(self.type, Role):
+        if self.type is Role:
             roles = await guild.fetch_roles()
             # WIP
             from . import utils
