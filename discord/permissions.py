@@ -741,7 +741,7 @@ class PermissionOverwriteKey:
         return self.__target  # type: ignore
 
     def __repr__(self) -> str:
-        return '<PermissionOverwriteKey id={0.id} type={0.type!r} channel={0.channel!r}>'.format(self)
+        return f'<PermissionOverwriteKey id={self.id}>'
 
 
 @_augment_from_permissions
