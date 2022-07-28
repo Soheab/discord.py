@@ -689,10 +689,10 @@ class PermissionOverwriteKey:
         self.id: int = id
 
         self.type: Union[Type[Role], Type[Member]] = type
-        self._channel: GuildChannel = utils.MISSING
+        self._channel: Optional[GuildChannel] = None
         self.__target: Optional[Union[Role, Member]] = None
 
-    def __update(self, channel: GuildChannel) -> None:
+    def __update(self, channel: GuildChannel, /) -> None:
         self._channel = channel
         guild = channel.guild
         if isinstance(self.type, Role):
@@ -732,6 +732,8 @@ class PermissionOverwriteKey:
             return self.__target
         if isinstance(self.type, Role):
             roles = await guild.fetch_roles()
+            # WIP
+            from . import utils
             self.__target = utils.get(roles, id=self.id)
         else:
             self.__target = await guild.fetch_member(self.id)
