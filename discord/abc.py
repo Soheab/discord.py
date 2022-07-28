@@ -51,7 +51,7 @@ from .context_managers import Typing
 from .enums import ChannelType
 from .errors import ClientException
 from .mentions import AllowedMentions
-from .permissions import PermissionOverwrite, Permissions
+from .permissions import PermissionOverwrite, PermissionOverwriteKey, Permissions
 from .role import Role
 from .invite import Invite
 from .file import File
@@ -469,10 +469,17 @@ class GuildChannel:
                     'id': target.id,
                 }
 
-                if isinstance(target, Role):
-                    payload['type'] = _Overwrites.ROLE
+                if isinstance(target, PermissionOverwriteKey):
+                    target.__update(self)
+                    if target.type is Role:
+                        payload['type'] = _Overwrites.ROLE
+                    else:
+                        payload['type'] = _Overwrites.MEMBER
                 else:
-                    payload['type'] = _Overwrites.MEMBER
+                    if isinstance(target, Role):
+                        payload['type'] = _Overwrites.ROLE
+                    else:
+                        payload['type'] = _Overwrites.MEMBER
 
                 perms.append(payload)
             options['permission_overwrites'] = perms
@@ -579,37 +586,38 @@ class GuildChannel:
         return PermissionOverwrite()
 
     @property
-    def overwrites(self) -> Dict[Union[Role, Member], PermissionOverwrite]:
+    def overwrites(self) -> Dict[PermissionOverwriteKey, PermissionOverwrite]:
         """Returns all of the channel's overwrites.
 
-        This is returned as a dictionary where the key contains the target which
-        can be either a :class:`~discord.Role` or a :class:`~discord.Member` and the value is the
-        overwrite as a :class:`~discord.PermissionOverwrite`.
+        This is returned as a dictionary where the key is :class:`~discord.PermissionOverwriteKey`
+        and the value is the overwrite as a :class:`~discord.PermissionOverwrite`.
+
+        You can use the :attr:`~discord.PermissionOverwriteKey.cached_target` property to get the
+        target of the overwrite, however if the target in not in the cache then it will be None.
+        :attr:`~discord.PermissionOverwriteKey.fetch_target` can be used to fetch the target from the
+        API.
 
         Returns
         --------
-        Dict[Union[:class:`~discord.Role`, :class:`~discord.Member`], :class:`~discord.PermissionOverwrite`]
+        Dict[:class:`~discord.PermissionOverwriteKey`, :class:`~discord.PermissionOverwrite`]
             The channel's permission overwrites.
         """
-        ret = {}
+        ret: Dict[PermissionOverwriteKey, PermissionOverwrite] = {}
         for ow in self._overwrites:
             allow = Permissions(ow.allow)
             deny = Permissions(ow.deny)
             overwrite = PermissionOverwrite.from_pair(allow, deny)
-            target = None
 
+            _type = None
             if ow.is_role():
-                target = self.guild.get_role(ow.id)
+                _type = Role
             elif ow.is_member():
-                target = self.guild.get_member(ow.id)
+                _type = Member
 
-            # TODO: There is potential data loss here in the non-chunked
-            # case, i.e. target is None because get_member returned nothing.
-            # This can be fixed with a slight breaking change to the return type,
-            # i.e. adding discord.Object to the list of it
-            # However, for now this is an acceptable compromise.
-            if target is not None:
-                ret[target] = overwrite
+            if _type is not None:
+                key = PermissionOverwriteKey(ow.id, type=_type)
+                key.__update(self)
+                ret[key] = overwrite
         return ret
 
     @property

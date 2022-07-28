@@ -24,16 +24,23 @@ DEALINGS IN THE SOFTWARE.
 
 from __future__ import annotations
 
-from typing import Callable, Any, ClassVar, Dict, Iterator, Set, TYPE_CHECKING, Tuple, Optional
+from typing import Callable, Any, ClassVar, Dict, Iterator, Set, TYPE_CHECKING, Tuple, Type, Optional, Union
+
 from .flags import BaseFlags, flag_value, fill_with_flags, alias_flag_value
 
 __all__ = (
     'Permissions',
     'PermissionOverwrite',
+    'PermissionOverwriteKey',
 )
 
 if TYPE_CHECKING:
     from typing_extensions import Self
+
+    from .role import Role
+    from .member import Member
+    from .abc import GuildChannel
+
 
 # A permission alias works like a regular flag but is marked
 # So the PermissionOverwrite knows to work with it
@@ -667,6 +674,72 @@ def _augment_from_permissions(cls):
 
     cls.PURE_FLAGS = cls.VALID_NAMES - aliases
     return cls
+
+
+class PermissionOverwriteKey:
+    """Represents a :class:`PermissionOverwrite` for :attr:`~abc.GuildChannel.overwrites`.
+
+    Attributes
+    -----------
+    id: :class:`int`
+        The ID of the target.
+    """
+
+    def __init__(self, id: int, type: Union[Type[Role], Type[Member]]) -> None:
+        self.id: int = id
+
+        self.type: Union[Type[Role], Type[Member]] = type
+        self._channel: GuildChannel = utils.MISSING
+        self.__target: Optional[Union[Role, Member]] = None
+
+    def __update(self, channel: GuildChannel) -> None:
+        self._channel = channel
+        guild = channel.guild
+        if isinstance(self.type, Role):
+            self.__target = guild.get_role(self.id)
+        else:
+            self.__target = guild.get_member(self.id)
+
+    @property
+    def cached_target(self) -> Optional[Union[Role, Member]]:
+        """Optional[Union[:class:`Role`, :class:`Member`]]: The cached target of this permission overwrite."""
+        return self.__target
+
+    async def fetch_target(self) -> Union[Role, Member]:
+        """|coro|
+        Fetch the target of this permission overwrite. A cached version of the target is returned if available.
+
+        Raises
+        ------
+        Forbidden
+            You do not have access to the guild.
+        HTTPException
+            Fetching the target failed.
+        NotFound
+            The target could not be found.
+
+        Returns
+        -------
+        Union[:class:`Role`, :class:`Member`]
+            The target of this permission overwrite.
+        """
+        if self._channel is None:
+            # WIP
+            raise AttributeError('PermissionOverwriteKey is not bound to a channel.')
+
+        guild = self._channel.guild
+        if self.__target is not None:
+            return self.__target
+        if isinstance(self.type, Role):
+            roles = await guild.fetch_roles()
+            self.__target = utils.get(roles, id=self.id)
+        else:
+            self.__target = await guild.fetch_member(self.id)
+
+        return self.__target  # type: ignore
+
+    def __repr__(self) -> str:
+        return '<PermissionOverwriteKey id={0.id} type={0.type!r} channel={0.channel!r}>'.format(self)
 
 
 @_augment_from_permissions

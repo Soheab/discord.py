@@ -37,6 +37,7 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     Sequence,
+    TypeVar,
     Tuple,
     Union,
     overload,
@@ -95,6 +96,11 @@ if TYPE_CHECKING:
         ForumChannel as ForumChannelPayload,
     )
     from .types.snowflake import SnowflakeList
+    from .permissions import PermissionOverwriteKey
+
+OverwriteT = TypeVar(
+    'OverwriteT', Member, Role, Snowflake, PermissionOverwriteKey, Union[Member, Role, Snowflake, PermissionOverwriteKey]
+)
 
 
 class ThreadWithMessage(NamedTuple):
@@ -293,7 +299,7 @@ class TextChannel(discord.abc.Messageable, discord.abc.GuildChannel, Hashable):
         slowmode_delay: int = ...,
         default_auto_archive_duration: ThreadArchiveDuration = ...,
         type: ChannelType = ...,
-        overwrites: Mapping[Union[Role, Member, Snowflake], PermissionOverwrite] = ...,
+        overwrites: Mapping[OverwriteT, PermissionOverwrite] = ...,
     ) -> TextChannel:
         ...
 
@@ -1329,7 +1335,7 @@ class VoiceChannel(discord.abc.Messageable, VocalGuildChannel):
         position: int = ...,
         sync_permissions: int = ...,
         category: Optional[CategoryChannel] = ...,
-        overwrites: Mapping[Union[Role, Member], PermissionOverwrite] = ...,
+        overwrites: Mapping[OverwriteT, PermissionOverwrite] = ...,
         rtc_region: Optional[str] = ...,
         video_quality_mode: VideoQualityMode = ...,
         reason: Optional[str] = ...,
@@ -1629,7 +1635,7 @@ class StageChannel(VocalGuildChannel):
         position: int = ...,
         sync_permissions: int = ...,
         category: Optional[CategoryChannel] = ...,
-        overwrites: Mapping[Union[Role, Member], PermissionOverwrite] = ...,
+        overwrites: Mapping[OverwriteT, PermissionOverwrite] = ...,
         rtc_region: Optional[str] = ...,
         video_quality_mode: VideoQualityMode = ...,
         reason: Optional[str] = ...,
@@ -1802,7 +1808,7 @@ class CategoryChannel(discord.abc.GuildChannel, Hashable):
         name: str = ...,
         position: int = ...,
         nsfw: bool = ...,
-        overwrites: Mapping[Union[Role, Member], PermissionOverwrite] = ...,
+        overwrites: Mapping[PermissionOverwriteKey, PermissionOverwrite] = ...,
         reason: Optional[str] = ...,
     ) -> CategoryChannel:
         ...
@@ -2114,7 +2120,7 @@ class ForumChannel(discord.abc.GuildChannel, Hashable):
         slowmode_delay: int = ...,
         default_auto_archive_duration: ThreadArchiveDuration = ...,
         type: ChannelType = ...,
-        overwrites: Mapping[Union[Role, Member, Snowflake], PermissionOverwrite] = ...,
+        overwrites: Mapping[OverwriteT, PermissionOverwrite] = ...,
     ) -> ForumChannel:
         ...
 
