@@ -30,7 +30,7 @@ import os
 
 from ..app_commands.namespace import Namespace
 from .item import Item, ItemCallbackType
-from ..enums import  ComponentType, ChannelType
+from ..enums import ComponentType, ChannelType
 from ..partial_emoji import PartialEmoji
 from ..emoji import Emoji
 from ..utils import MISSING
@@ -55,30 +55,13 @@ if TYPE_CHECKING:
 
     from discord.abc import GuildChannel
     from discord import Role, Member, Interaction, User, Thread
-"""
-PossibleValue = TypeVar(
-'ValuesT',
-# default
-str,
-# channel
-GuildChannel,
-Thread,
-Union[Thread, GuildChannel],
-# role
-Role,
-# user
-Member,
-User,
-# mentionable
-Union[Role, Member],
-Union[Role, User]
-)
-"""
+
 
 V = TypeVar('V', bound='View', covariant=True)
 selected_values: ContextVar[Dict[str, Any]] = ContextVar('selected_values')
 
-class BaseSelect(Item[V]): 
+
+class BaseSelect(Item[V]):
     """The base select menu model that all select menus inherit from.
 
     The following implement this class:
@@ -91,7 +74,14 @@ class BaseSelect(Item[V]):
 
     .. versionadded:: 2.2
     """
-    type: Literal[ComponentType.string_select, ComponentType.user_select, ComponentType.role_select, ComponentType.channel_select, ComponentType.mentionable_select]
+
+    type: Literal[
+        ComponentType.string_select,
+        ComponentType.user_select,
+        ComponentType.role_select,
+        ComponentType.channel_select,
+        ComponentType.mentionable_select,
+    ]
 
     __slots__ = ()
 
@@ -104,7 +94,13 @@ class BaseSelect(Item[V]):
 
     def __init__(
         self,
-        type: Literal[ComponentType.string_select, ComponentType.user_select, ComponentType.role_select, ComponentType.channel_select, ComponentType.mentionable_select],
+        type: Literal[
+            ComponentType.string_select,
+            ComponentType.user_select,
+            ComponentType.role_select,
+            ComponentType.channel_select,
+            ComponentType.mentionable_select,
+        ],
         *,
         custom_id: str = MISSING,
         row: Optional[int] = None,
@@ -119,7 +115,7 @@ class BaseSelect(Item[V]):
         custom_id = os.urandom(16).hex() if custom_id is MISSING else custom_id
         if not isinstance(custom_id, str):
             raise TypeError(f'expected custom_id to be str not {custom_id.__class__.__name__}')
-    
+
         self._underlying = SelectMenu._raw_construct(
             type=type,
             custom_id=custom_id,
@@ -129,7 +125,7 @@ class BaseSelect(Item[V]):
             disabled=disabled,
             **extras,
         )
-            
+
         self.row = row
         self._values: List[Any] = []
 
@@ -200,14 +196,14 @@ class BaseSelect(Item[V]):
     def _refresh_component(self, component: SelectMenu) -> None:
         self._underlying = component
 
-    def _refresh_state(self, intreaction: Interaction, data: SelectMessageComponentInteractionData) -> None:
+    def _refresh_state(self, interaction: Interaction, data: SelectMessageComponentInteractionData) -> None:
         values = selected_values.get({})
         payload = []
         if "resolved" in data:
-            resolved = Namespace._get_resolved_values(interaction, data["resolved"])
+            resolved = Namespace._get_resolved_items(interaction, data["resolved"])
             payload = list(resolved.values())
         else:
-            payload = data.get("values", []))
+            payload = data.get("values", [])
 
         self._values = values[self.custom_id] = payload
         selected_values.set(values)
@@ -243,15 +239,15 @@ class Select(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.__class__.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                options=[] if options is MISSING else options,
-                row=row,
-            )
+            self.__class__.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            options=[] if options is MISSING else options,
+            row=row,
+        )
 
     @property
     def options(self) -> List[SelectOption]:
@@ -352,14 +348,14 @@ class UserSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.__class__.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                row=row,
-            )
+            self.__class__.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
 
 
 class RoleSelect(BaseSelect[V]):
@@ -380,14 +376,14 @@ class RoleSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.__class__.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                row=row,
-            )
+            self.__class__.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
 
 
 class MentionableSelect(BaseSelect[V]):
@@ -408,14 +404,14 @@ class MentionableSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.__class__.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                row=row,
-            )
+            self.__class__.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
 
 
 class ChannelSelect(BaseSelect[V]):
@@ -424,7 +420,7 @@ class ChannelSelect(BaseSelect[V]):
     __slots__ = __item_repr_attributes__
 
     if TYPE_CHECKING:
-        values: List[Union[Thread, GuildChannel]]:
+        values: List[Union[Thread, GuildChannel]]
 
     def __init__(
         self,
@@ -445,7 +441,7 @@ class ChannelSelect(BaseSelect[V]):
             max_values=max_values,
             disabled=disabled,
             row=row,
-            channel_types = [] if channel_types is MISSING else channel_types,
+            channel_types=[] if channel_types is MISSING else channel_types,
         )
 
     @property
