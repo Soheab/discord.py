@@ -23,41 +23,63 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from __future__ import annotations
-from typing import Any, Literal, List, Optional, TYPE_CHECKING, Tuple, TypeVar, Callable, Union, Dict
-from contextvars import ContextVar
+
 import inspect
 import os
+from contextvars import ContextVar
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Literal, Optional, Tuple, Type, TypeVar, Union, overload
+
+from typing_extensions import TypeAlias
 
 from ..app_commands.namespace import Namespace
-from .item import Item, ItemCallbackType
-from ..enums import ComponentType, ChannelType
-from ..partial_emoji import PartialEmoji
+from ..components import SelectMenu, SelectOption
 from ..emoji import Emoji
+from ..enums import ChannelType, ComponentType
+from ..partial_emoji import PartialEmoji
 from ..utils import MISSING
-from ..components import (
-    SelectOption,
-    SelectMenu,
-)
+from .item import Item, ItemCallbackType
 
 __all__ = (
+    'BaseSelect',
     'Select',
+    'UserSelect',
+    'RoleSelect',
+    'MentionableSelect',
+    'ChannelSelect',
     'select',
 )
 
 if TYPE_CHECKING:
     from typing_extensions import Self
 
-    from .view import View
-    from ..types.components import SelectMenu as SelectMenuPayload
-    from ..types.interactions import (
-        SelectMessageComponentInteractionData,
-    )
-
+    from discord import Interaction, Member, Role, Thread, User
     from discord.abc import GuildChannel
-    from discord import Role, Member, Interaction, User, Thread
+
+    from ..types.components import SelectMenu as SelectMenuPayload
+    from ..types.interactions import SelectMessageComponentInteractionData
+    from .view import View
+
+    ValidSelectTypes: TypeAlias = Literal[
+        ComponentType.string_select,
+        ComponentType.user_select,
+        ComponentType.role_select,
+        ComponentType.channel_select,
+        ComponentType.mentionable_select,
+    ]
 
 
 V = TypeVar('V', bound='View', covariant=True)
+BaseSelectT = TypeVar('BaseSelectT', bound='BaseSelect[Any]')
+SelectT = TypeVar('SelectT', bound='Select[Any]')
+UserSelectT = TypeVar('UserSelectT', bound='UserSelect[Any]')
+RoleSelectT = TypeVar('RoleSelectT', bound='RoleSelect[Any]')
+ChannelSelectT = TypeVar('ChannelSelectT', bound='ChannelSelect[Any]')
+MentionableSelectT = TypeVar('MentionableSelectT', bound='MentionableSelect[Any]')
+SelectCallbackDecorator: TypeAlias = Callable[
+    [ItemCallbackType[V, BaseSelectT]],
+    ItemCallbackType[V, BaseSelectT],
+]
+
 selected_values: ContextVar[Dict[str, Any]] = ContextVar('selected_values')
 
 
@@ -75,13 +97,7 @@ class BaseSelect(Item[V]):
     .. versionadded:: 2.2
     """
 
-    type: Literal[
-        ComponentType.string_select,
-        ComponentType.user_select,
-        ComponentType.role_select,
-        ComponentType.channel_select,
-        ComponentType.mentionable_select,
-    ]
+    type: ValidSelectTypes
 
     __slots__ = ()
 
@@ -94,13 +110,7 @@ class BaseSelect(Item[V]):
 
     def __init__(
         self,
-        type: Literal[
-            ComponentType.string_select,
-            ComponentType.user_select,
-            ComponentType.role_select,
-            ComponentType.channel_select,
-            ComponentType.mentionable_select,
-        ],
+        type: ValidSelectTypes,
         *,
         custom_id: str = MISSING,
         row: Optional[int] = None,
@@ -450,8 +460,10 @@ class ChannelSelect(BaseSelect[V]):
         return self._underlying.channel_types
 
 
+@overload
 def select(
     *,
+    cls: Type[SelectT] = Select[V],
     placeholder: Optional[str] = None,
     custom_id: str = MISSING,
     min_values: int = 1,
@@ -459,18 +471,93 @@ def select(
     options: List[SelectOption] = MISSING,
     disabled: bool = False,
     row: Optional[int] = None,
-) -> Callable[[ItemCallbackType[V, Select[V]]], Select[V]]:
+) -> SelectCallbackDecorator[V, SelectT]:
+    ...
+
+
+@overload
+def select(
+    *,
+    cls: Type[UserSelectT] = UserSelect[V],
+    placeholder: Optional[str] = None,
+    custom_id: str = MISSING,
+    min_values: int = 1,
+    max_values: int = 1,
+    disabled: bool = False,
+    row: Optional[int] = None,
+) -> SelectCallbackDecorator[V, UserSelectT]:
+    ...
+
+
+@overload
+def select(
+    *,
+    cls: Type[RoleSelectT] = RoleSelect[V],
+    placeholder: Optional[str] = None,
+    custom_id: str = MISSING,
+    min_values: int = 1,
+    max_values: int = 1,
+    disabled: bool = False,
+    row: Optional[int] = None,
+) -> SelectCallbackDecorator[V, RoleSelectT]:
+    ...
+
+
+@overload
+def select(
+    *,
+    cls: Type[ChannelSelectT] = ChannelSelect[V],
+    placeholder: Optional[str] = None,
+    custom_id: str = MISSING,
+    channel_types: List[ChannelType] = MISSING,
+    min_values: int = 1,
+    max_values: int = 1,
+    disabled: bool = False,
+    row: Optional[int] = None,
+) -> SelectCallbackDecorator[V, ChannelSelectT]:
+    ...
+
+
+@overload
+def select(
+    *,
+    cls: Type[MentionableSelectT] = MentionableSelect[V],
+    placeholder: Optional[str] = None,
+    custom_id: str = MISSING,
+    channel_types: List[ChannelType] = MISSING,
+    min_values: int = 1,
+    max_values: int = 1,
+    disabled: bool = False,
+    row: Optional[int] = None,
+) -> SelectCallbackDecorator[V, MentionableSelectT]:
+    ...
+
+
+def select(
+    *,
+    cls: Type[BaseSelectT] = Select[V],
+    placeholder: Optional[str] = None,
+    custom_id: str = MISSING,
+    min_values: int = 1,
+    max_values: int = 1,
+    options: List[SelectOption] = MISSING,
+    channel_types: List[ChannelType] = MISSING,
+    disabled: bool = False,
+    row: Optional[int] = None,
+) -> SelectCallbackDecorator[V, BaseSelectT]:
     """A decorator that attaches a select menu to a component.
 
     The function being decorated should have three parameters, ``self`` representing
     the :class:`discord.ui.View`, the :class:`discord.Interaction` you receive and
-    the :class:`discord.ui.Select` being used.
+    the :class:`discord.ui.BaseSelect` being used.
 
     In order to get the selected items that the user has chosen within the callback
-    use :attr:`Select.values`.
+    use :attr:`BaseSelect.values`.
 
     Parameters
     ------------
+    cls: Type[:class:`iscord.ui.BaseSelect`]
+        The class to use for the select menu. Defaults to :class:`discord.ui.Select`.
     placeholder: Optional[:class:`str`]
         The placeholder text that is shown if nothing is selected, if any.
     custom_id: :class:`str`
@@ -489,16 +576,22 @@ def select(
         The maximum number of items that must be chosen for this select menu.
         Defaults to 1 and must be between 1 and 25.
     options: List[:class:`discord.SelectOption`]
-        A list of options that can be selected in this menu.
+        A list of options that can be selected in this menu. This can not be used with
+        :class:`ChannelSelect` instances.
+    channel_types: List[:class:`discord.ChannelType`]
+        The types of channels you want to limit the selection to. This can only be used
+        with :class:`ChannelSelect` instances.
     disabled: :class:`bool`
         Whether the select is disabled or not. Defaults to ``False``.
     """
 
-    def decorator(func: ItemCallbackType[V, Select[V]]) -> ItemCallbackType[V, Select[V]]:
+    def decorator(func: ItemCallbackType[V, BaseSelectT]) -> ItemCallbackType[V, BaseSelectT]:
         if not inspect.iscoroutinefunction(func):
             raise TypeError('select function must be a coroutine function')
+        if not issubclass(cls, BaseSelect):
+            raise TypeError(f'cls must be a subclass of BaseSelect, {cls.__name__} can not be used.')
 
-        func.__discord_ui_model_type__ = Select
+        func.__discord_ui_model_type__ = cls
         func.__discord_ui_model_kwargs__ = {
             'placeholder': placeholder,
             'custom_id': custom_id,
@@ -506,8 +599,10 @@ def select(
             'min_values': min_values,
             'max_values': max_values,
             'options': options,
+            'channel_types': channel_types,
             'disabled': disabled,
         }
+
         return func
 
-    return decorator  # type: ignore
+    return decorator
