@@ -82,6 +82,7 @@ SelectCallbackDecorator: TypeAlias = Callable[
 
 selected_values: ContextVar[Dict[str, Any]] = ContextVar('selected_values')
 
+
 class BaseSelect(Item[V]):
     """The base select menu model that all select menus inherit from.
 
@@ -245,15 +246,15 @@ class Select(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                options=[] if options is MISSING else options,
-                row=row,
-            )
+            self.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            options=[] if options is MISSING else options,
+            row=row,
+        )
 
     @property
     def type(self) -> Literal[ComponentType.string_select]:
@@ -357,14 +358,14 @@ class UserSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                row=row,
-            )
+            self.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
 
     @property
     def type(self) -> Literal[ComponentType.user_select]:
@@ -388,14 +389,14 @@ class RoleSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                row=row,
-            )
+            self.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
 
     @property
     def type(self) -> Literal[ComponentType.role_select]:
@@ -419,14 +420,14 @@ class MentionableSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-                self.type,
-                custom_id=custom_id,
-                placeholder=placeholder,
-                min_values=min_values,
-                max_values=max_values,
-                disabled=disabled,
-                row=row,
-            )
+            self.type,
+            custom_id=custom_id,
+            placeholder=placeholder,
+            min_values=min_values,
+            max_values=max_values,
+            disabled=disabled,
+            row=row,
+        )
 
     @property
     def type(self) -> Literal[ComponentType.mentionable_select]:
