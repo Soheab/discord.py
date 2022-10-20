@@ -82,7 +82,6 @@ SelectCallbackDecorator: TypeAlias = Callable[
 
 selected_values: ContextVar[Dict[str, Any]] = ContextVar('selected_values')
 
-
 class BaseSelect(Item[V]):
     """The base select menu model that all select menus inherit from.
 
@@ -96,8 +95,6 @@ class BaseSelect(Item[V]):
 
     .. versionadded:: 2.2
     """
-
-    type: ValidSelectTypes
 
     __slots__ = ()
 
@@ -230,7 +227,6 @@ class BaseSelect(Item[V]):
 
 
 class Select(BaseSelect[V]):
-    type: Literal[ComponentType.string_select] = ComponentType.string_select
     __item_repr_attributes__: Tuple[str, ...] = BaseSelect.__item_repr_attributes__ + ('options',)
     __slots__ = __item_repr_attributes__
 
@@ -249,15 +245,19 @@ class Select(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-            self.__class__.type,
-            custom_id=custom_id,
-            placeholder=placeholder,
-            min_values=min_values,
-            max_values=max_values,
-            disabled=disabled,
-            options=[] if options is MISSING else options,
-            row=row,
-        )
+                self.type,
+                custom_id=custom_id,
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                options=[] if options is MISSING else options,
+                row=row,
+            )
+
+    @property
+    def type(self) -> Literal[ComponentType.string_select]:
+        return ComponentType.string_select
 
     @property
     def options(self) -> List[SelectOption]:
@@ -341,7 +341,6 @@ class Select(BaseSelect[V]):
 
 
 class UserSelect(BaseSelect[V]):
-    type: Literal[ComponentType.user_select] = ComponentType.user_select
     __slots__ = BaseSelect.__item_repr_attributes__
 
     if TYPE_CHECKING:
@@ -358,18 +357,21 @@ class UserSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-            self.__class__.type,
-            custom_id=custom_id,
-            placeholder=placeholder,
-            min_values=min_values,
-            max_values=max_values,
-            disabled=disabled,
-            row=row,
-        )
+                self.type,
+                custom_id=custom_id,
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                row=row,
+            )
+
+    @property
+    def type(self) -> Literal[ComponentType.user_select]:
+        return ComponentType.user_select
 
 
 class RoleSelect(BaseSelect[V]):
-    type: Literal[ComponentType.role_select] = ComponentType.role_select
     __slots__ = BaseSelect.__item_repr_attributes__
 
     if TYPE_CHECKING:
@@ -386,18 +388,21 @@ class RoleSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-            self.__class__.type,
-            custom_id=custom_id,
-            placeholder=placeholder,
-            min_values=min_values,
-            max_values=max_values,
-            disabled=disabled,
-            row=row,
-        )
+                self.type,
+                custom_id=custom_id,
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                row=row,
+            )
+
+    @property
+    def type(self) -> Literal[ComponentType.role_select]:
+        return ComponentType.role_select
 
 
 class MentionableSelect(BaseSelect[V]):
-    type: Literal[ComponentType.mentionable_select] = ComponentType.mentionable_select
     __slots__ = BaseSelect.__item_repr_attributes__
 
     if TYPE_CHECKING:
@@ -414,18 +419,21 @@ class MentionableSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-            self.__class__.type,
-            custom_id=custom_id,
-            placeholder=placeholder,
-            min_values=min_values,
-            max_values=max_values,
-            disabled=disabled,
-            row=row,
-        )
+                self.type,
+                custom_id=custom_id,
+                placeholder=placeholder,
+                min_values=min_values,
+                max_values=max_values,
+                disabled=disabled,
+                row=row,
+            )
+
+    @property
+    def type(self) -> Literal[ComponentType.mentionable_select]:
+        return ComponentType.mentionable_select
 
 
 class ChannelSelect(BaseSelect[V]):
-    type: Literal[ComponentType.channel_select] = ComponentType.channel_select
     __item_repr_attributes__ = BaseSelect.__item_repr_attributes__ + ("channel_types",)
     __slots__ = __item_repr_attributes__
 
@@ -444,7 +452,7 @@ class ChannelSelect(BaseSelect[V]):
         row: Optional[int] = None,
     ) -> None:
         super().__init__(
-            self.__class__.type,
+            self.type,
             custom_id=custom_id,
             placeholder=placeholder,
             min_values=min_values,
@@ -453,6 +461,10 @@ class ChannelSelect(BaseSelect[V]):
             row=row,
             channel_types=[] if channel_types is MISSING else channel_types,
         )
+
+    @property
+    def type(self) -> Literal[ComponentType.channel_select]:
+        return ComponentType.channel_select
 
     @property
     def channel_types(self) -> List[ChannelType]:
