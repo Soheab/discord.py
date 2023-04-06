@@ -55,11 +55,11 @@ from .widget import Widget
 from .guild import Guild
 from .emoji import Emoji
 from .channel import _threaded_channel_factory, PartialMessageable
-from .enums import ChannelType
+from .enums import ChannelType, ContentFilter, NotificationLevel, VerificationLevel
 from .mentions import AllowedMentions
 from .errors import *
 from .enums import Status
-from .flags import ApplicationFlags, Intents
+from .flags import ApplicationFlags, Intents, SystemChannelFlags
 from .gateway import *
 from .activity import ActivityTypes, BaseActivity, create_activity
 from .voice_client import VoiceClient
@@ -75,6 +75,7 @@ from .ui.view import View
 from .stage_instance import StageInstance
 from .threads import Thread
 from .sticker import GuildSticker, StandardSticker, StickerPack, _sticker_factory
+from .create_guild import CreateGuild
 
 if TYPE_CHECKING:
     from types import TracebackType
@@ -2251,8 +2252,13 @@ class Client:
         *,
         name: str,
         icon: bytes = MISSING,
+        afk_timeout: int = MISSING,
+        system_channel_flags: SystemChannelFlags = MISSING,
+        verification_level: VerificationLevel = MISSING,
+        default_message_notifications: NotificationLevel = MISSING,
+        explicit_content_filter: ContentFilter = MISSING,
         code: str = MISSING,
-    ) -> Guild:
+    ) -> Union[Guild, CreateGuild]:
         """|coro|
 
         Creates a :class:`.Guild`.
@@ -2269,12 +2275,22 @@ class Client:
         Parameters
         ----------
         name: :class:`str`
-            The name of the guild.
+            The name of the guild. 
         icon: Optional[:class:`bytes`]
             The :term:`py:bytes-like object` representing the icon. See :meth:`.ClientUser.edit`
             for more details on what is expected.
+        afk_timeout: :class:`int`
+            The number of seconds until someone is moved to the AFK channel.
+        system_channel_flags: :class:`.SystemChannelFlags`
+            The settings for the system channel
+        verification_level: :class:`.VerificationLevel`
+            The verification level for the guild.
+        default_notifications: :class:`.NotificationLevel`
+            The default notification level for the guild.
+        explicit_content_filter: :class:`.ContentFilter`
+            The explicit content filter for the guild.
         code: :class:`str`
-            The code for a template to create the guild with.
+            The code for a template to create the guild with.  Only ``name`` and ``icon`` are used if this is not ``MISSING``.
 
             .. versionadded:: 1.4
 
@@ -2283,7 +2299,8 @@ class Client:
         HTTPException
             Guild creation failed.
         ValueError
-            Invalid icon image format given. Must be PNG or JPG.
+            - ``name`` and ``object`` are both missing.
+            - Invalid icon image format given. Must be PNG or JPG.
 
         Returns
         -------
@@ -2291,16 +2308,25 @@ class Client:
             The guild created. This is not the same guild that is
             added to cache.
         """
-        if icon is not MISSING:
-            icon_base64 = utils._bytes_to_base64_data(icon)
-        else:
-            icon_base64 = None
-
         if code:
+            icon_base64 = None
+            if icon is not MISSING:
+                icon_base64 = utils._bytes_to_base64_data(icon)
+
             data = await self.http.create_from_template(code, name, icon_base64)
-        else:
-            data = await self.http.create_guild(name, icon_base64)
-        return Guild(data=data, state=self._connection)
+            return Guild(data=data, state=self._connection)
+        
+        create_guild = CreateGuild(
+            name=name,
+            icon=icon,
+            afk_timeout=afk_timeout,
+            system_channel_flags=system_channel_flags,
+            verification_level=verification_level,
+            default_message_notifications=default_message_notifications,
+            explicit_content_filter=explicit_content_filter,
+        )._with_state(self._connection)
+
+        return create_guild
 
     async def fetch_stage_instance(self, channel_id: int, /) -> StageInstance:
         """|coro|
