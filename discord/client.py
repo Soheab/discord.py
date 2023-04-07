@@ -2247,6 +2247,36 @@ class Client:
         data = await self.http.get_guild(guild_id, with_counts=with_counts)
         return Guild(data=data, state=self._connection)
 
+    @overload
+    async def create_guild(
+        self,
+        *,
+        name: str,
+        icon: bytes = ...,
+        afk_timeout: int = ...,
+        system_channel_flags: SystemChannelFlags = ...,
+        verification_level: VerificationLevel = ...,
+        default_message_notifications: NotificationLevel = ...,
+        explicit_content_filter: ContentFilter = ...,
+        code: str,
+    ) -> Guild:
+        ...
+
+    @overload
+    async def create_guild(
+        self,
+        *,
+        name: str,
+        icon: bytes = ...,
+        afk_timeout: int = ...,
+        system_channel_flags: SystemChannelFlags = ...,
+        verification_level: VerificationLevel = ...,
+        default_message_notifications: NotificationLevel = ...,
+        explicit_content_filter: ContentFilter = ...,
+        code: str = ...,
+    ) -> CreateGuild:
+        ...
+
     async def create_guild(
         self,
         *,
