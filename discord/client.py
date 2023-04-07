@@ -2295,6 +2295,26 @@ class Client:
 
         Bot accounts in more than 10 guilds are not allowed to create guilds.
 
+        This returns a :class:`.CreateGuild` if the ``code`` parameter is not provided 
+        which can be used to interactively create a guild. The guild will not be created 
+        until ``await`` is used on the :class:`.CreateGuild` object, this allows for pre-configuring channels and roles.
+
+        .. code-block:: python3
+            create_guild = client.create_guild(name='My Guild')
+            # adding a text channel called 'bot-commands'
+            create_guild.add_channel(discord.ChannelType.text, 'bot-commands')
+            # adding a role called 'Admins'	
+            create_guild.add_role('Admins')
+            # category channels can be created and channels can be added to them
+            category = create_guild.add_channel(discord.ChannelType.category, 'information')
+            # adding a text channel called 'rules' to the category
+            create_guild.add_channel(discord.ChannelType.text, 'rules', category=category)
+
+            # creating the guild
+            guild = await create_guild
+            # or await create_guild.create()
+        
+
         .. versionchanged:: 2.0
             ``name`` and ``icon`` parameters are now keyword-only. The ``region`` parameter has been removed.
 
@@ -2343,9 +2363,9 @@ class Client:
 
         Returns
         -------
-        :class:`.Guild`
+        Union[:class:`.Guild`, :class:`.CreateGuild`]
             The guild created. This is not the same guild that is
-            added to cache.
+            added to cache. if ``code`` is not ``MISSING`` else :class:`.CreateGuild` is returned.
         """
         if code:
             icon_base64 = None
