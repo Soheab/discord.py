@@ -25,26 +25,24 @@ DEALINGS IN THE SOFTWARE.
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal, Optional, overload, Union, Mapping, Sequence, Dict, List, Tuple, Generator
 
-
 from . import abc
-from .partial_emoji import PartialEmoji, _EmojiTag
-
-from .channel import ForumTag
-from .utils import MISSING, _bytes_to_base64_data, time_snowflake, utcnow
 from .enums import (
     VerificationLevel, NotificationLevel, ContentFilter, ChannelType, VideoQualityMode,
     ForumLayoutType, ForumOrderType,
 )
-from .message import EmojiInputType
 from .flags import SystemChannelFlags
 from .guild import Guild
+from .partial_emoji import PartialEmoji, _EmojiTag
+from .utils import MISSING, _bytes_to_base64_data, time_snowflake, utcnow
 
 if TYPE_CHECKING:
     from .abc import Snowflake
-    from .role import Role
-    from .permissions import PermissionOverwrite, Permissions
+    from .channel import ForumTag
     from .colour import Colour
+    from .message import EmojiInputType
+    from .role import Role
     from .state import ConnectionState
+    from .permissions import PermissionOverwrite, Permissions
 
 
 class CreateGuildRole:
