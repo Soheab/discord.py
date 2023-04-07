@@ -385,15 +385,6 @@ class CreateGuild:
                 options["parent_id"] = parent_id
 
         elif channel_type is ChannelType.forum:
-            default_auto_archive_duration = kwargs.pop('default_auto_archive_duration', MISSING)
-            if default_auto_archive_duration is not MISSING:
-                options['default_auto_archive_duration'] = default_auto_archive_duration
-
-            default_thread_slowmode_delay = kwargs.pop('default_thread_slowmode_delay', MISSING)
-            if default_thread_slowmode_delay is not MISSING:
-                options['default_thread_rate_limit_per_user'] = default_thread_slowmode_delay
-
-
             default_sort_order = kwargs.pop('default_sort_order', MISSING)
             if default_sort_order is not MISSING:
                 if not isinstance(default_sort_order, ForumOrderType):
