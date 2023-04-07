@@ -2254,9 +2254,9 @@ class Client:
         icon: bytes = MISSING,
         afk_timeout: int = MISSING,
         system_channel_flags: SystemChannelFlags = MISSING,
-        verification_level: VerificationLevel = MISSING,
-        default_message_notifications: NotificationLevel = MISSING,
-        explicit_content_filter: ContentFilter = MISSING,
+        verification_level: VerificationLevel = VerificationLevel.none,
+        default_message_notifications: NotificationLevel = NotificationLevel.all_messages,
+        explicit_content_filter: ContentFilter = ContentFilter.disabled,
         code: str = MISSING,
     ) -> Union[Guild, CreateGuild]:
         """|coro|
@@ -2282,13 +2282,16 @@ class Client:
         afk_timeout: :class:`int`
             The number of seconds until someone is moved to the AFK channel.
         system_channel_flags: :class:`.SystemChannelFlags`
-            The settings for the system channel
+            The settings for the system channel.
         verification_level: :class:`.VerificationLevel`
             The verification level for the guild.
+            The verification level for the guild. Defaults to :attr:`.VerificationLevel.none`
         default_notifications: :class:`.NotificationLevel`
             The default notification level for the guild.
+            The default notification level for the guild. Defaults to :attr:`.NotificationLevel.all_messages`
         explicit_content_filter: :class:`.ContentFilter`
             The explicit content filter for the guild.
+            The explicit content filter for the guild. Defaults to :attr:`.ContentFilter.disabled`
         code: :class:`str`
             The code for a template to create the guild with.  Only ``name`` and ``icon`` are used if this is not ``MISSING``.
 
