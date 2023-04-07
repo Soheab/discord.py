@@ -2307,8 +2307,9 @@ class Client:
         HTTPException
             Guild creation failed.
         ValueError
-            - ``name`` and ``object`` are both missing.
-            - Invalid icon image format given. Must be PNG or JPG.
+            Invalid icon image format given. Must be PNG or JPG.
+        TypeError
+            - Invalid type for one of the following parameters, ``system_channel_flags, verification_level, default_notifications, explicit_content_filter``.
 
         Returns
         -------
