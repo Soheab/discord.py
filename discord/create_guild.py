@@ -46,6 +46,31 @@ if TYPE_CHECKING:
 
 
 class CreateGuildRole:
+    """Represents a role that is to be created in a guild.
+
+    .. versionadded:: 2.4
+
+    Attributes
+    ----------
+    id: :class:`int`
+        The ID for the role.
+    name: :class:`str`
+        The name of the role.
+    hoist: :class:`bool`
+         Indicates if the role will be displayed separately from other members.
+    position: :class:`int`
+        The position of the role. This number is usually positive. The bottom
+        role has a position of 0.
+    permissions: :class:`~discord.Permissions`
+        The permissions that the role grants.
+
+    unicode_emoji: Optional[:class:`str`]
+        The role's unicode emoji, if available.
+    tags: Optional[:class:`RoleTags`]
+        The role tags associated with this role.
+    mentionable: :class:`bool`
+        Indicates if the role can be mentioned by others.
+    """
     def __init__(
         self,
         name: str,
@@ -57,6 +82,7 @@ class CreateGuildRole:
         position: int = MISSING,
         permissions: Permissions = MISSING,
         tags: Optional[Sequence[_EmojiTag]] = MISSING,
+        mentionable: bool = MISSING,
     ) -> None:
         self.id: int = time_snowflake(utcnow())
         self.name: str = name
@@ -68,6 +94,7 @@ class CreateGuildRole:
         self.position: int = position
         self.permissions: Permissions = permissions
         self.tags: Optional[Sequence[_EmojiTag]] = tags
+        self.mentionable: bool = mentionable
 
     def _to_dict(self) -> Dict[str, Any]:
         base = {
@@ -84,10 +111,33 @@ class CreateGuildRole:
             base['unicode_emoji'] = self.unicode_emoji
         if self.tags:
             base['tags'] = self.tags
+        if self.mentionable is not MISSING:
+            base['mentionable'] = self.mentionable
 
         return base
         
 class CreateGuildChannel:
+    """Represents a channel that is to be created in a guild.
+
+    .. versionadded:: 2.4
+
+    .. note::
+        Only the attributes that are applicable to all channel types are available.
+
+    Attributes
+    ----------
+    id: :class:`int`
+        The ID for the channel.
+    type: :class:`.ChannelType`
+        The type of channel.
+    name: :class:`str`
+        The name of the channel.
+    position: :class:`int`
+        The position of the channel. This number is usually positive. The bottom
+        channel has a position of 0.
+    overwrites: Mapping[Union[:class:`~discord.abc.Snowflake`, :class:`CreateGuildRole`], :class:`~discord.PermissionOverwrite`]
+        The permission overwrites for the channel.
+    """
     def __init__(
         self,
         channel_type: ChannelType,
@@ -118,6 +168,28 @@ class CreateGuildChannel:
         return payload
 
 class CreateGuild:
+    """Represents a guild that is to be created.
+
+    .. versionadded:: 2.4
+
+    Attributes
+    ----------
+    name: :class:`str`
+        The name of the guild.
+    icon: Optional[:class:`bytes`]
+        The :term:`py:bytes-like object` representing the icon. See :meth:`.ClientUser.edit`
+        for more details on what is expected.
+    afk_timeout: :class:`int`
+        The number of seconds until someone is moved to the AFK channel.
+    system_channel_flags: :class:`.SystemChannelFlags`
+        The settings for the system channel.
+    verification_level: :class:`.VerificationLevel`
+        The verification level for the guild. Defaults to :attr:`.VerificationLevel.none`
+    default_notifications: :class:`.NotificationLevel`
+        The default notification level for the guild. Defaults to :attr:`.NotificationLevel.all_messages`
+    explicit_content_filter: :class:`.ContentFilter`
+        The explicit content filter for the guild. Defaults to :attr:`.ContentFilter.disabled`
+    """
     def __init__(
         self,
         *,
@@ -172,15 +244,17 @@ class CreateGuild:
 
     @property
     def channels(self) -> List[CreateGuildChannel]:
+        """List[:class:`CreateGuildChannel`]: A list of channels that are to be created in the guild."""
         return list(self._channels.values())
     
     @property
     def roles(self) -> List[CreateGuildRole]:
+        """List[:class:`CreateGuildRole`]: A list of roles that are to be created in the guild."""
         return list(self._roles.values())
-
 
     @property
     def system_channel(self) -> Optional[CreateGuildChannel]:
+        """Optional[:class:`CreateGuildChannel`]: The system channel for the guild."""
         return self._system_channel
 
     @system_channel.setter
@@ -191,6 +265,7 @@ class CreateGuild:
 
     @property
     def afk_channel(self) -> Optional[CreateGuildChannel]:
+        """Optional[:class:`CreateGuildChannel`]: The AFK channel for the guild."""
         return self._afk_channel
     
     @afk_channel.setter
@@ -201,9 +276,11 @@ class CreateGuild:
     
     
     def get_channel(self, id: int, /) -> Optional[CreateGuildChannel]:
+        """Optional[:class:`CreateGuildChannel`]: Returns the channel with the given ID if it exists."""
         return self._channels.get(id)
     
     def get_role(self, id: int, /) -> Optional[CreateGuildRole]:
+        """Optional[:class:`CreateGuildRole`]: Returns the role with the given ID if it exists."""
         return self._roles.get(id)
 
     def _to_dict(self) -> Dict[str, Any]:
@@ -237,7 +314,7 @@ class CreateGuild:
         return payload
 
     @overload
-    async def add_channel(
+    def add_channel(
         self,
         channel_type: Literal[ChannelType.text],
         /,
@@ -257,7 +334,7 @@ class CreateGuild:
         ...
     
     @overload
-    async def add_channel(
+    def add_channel(
         self,
         channel_type: Literal[ChannelType.voice],
         /,
@@ -275,7 +352,7 @@ class CreateGuild:
         ...
 
     @overload
-    async def add_channel(
+    def add_channel(
         self,
         channel_type: Literal[ChannelType.stage_voice],
         /,
@@ -292,7 +369,7 @@ class CreateGuild:
         ...
 
     @overload
-    async def add_channel(
+    def add_channel(
         self,
         channel_type: Literal[ChannelType.category],
         /,
@@ -304,7 +381,7 @@ class CreateGuild:
         ...
 
     @overload
-    async def add_channel(
+    def add_channel(
         self,
         channel_type: Literal[ChannelType.forum],
         /,
@@ -325,7 +402,7 @@ class CreateGuild:
     ):
         ...
 
-    async def add_channel(
+    def add_channel(
         self,
         channel_type: ChannelType,
         /
@@ -335,6 +412,70 @@ class CreateGuild:
         overwrites: Mapping[Union[Snowflake, CreateGuildRole], PermissionOverwrite] = MISSING,
         **kwargs: Any,
     ):
+        """Adds a channel to the guild to be created.
+
+        Parameters
+        ----------
+        channel_type: :class:`.ChannelType`
+            The type of channel to create. Valid types are: :attr:`ChannelType.text`, :attr:`ChannelType.voice`, :attr:`ChannelType.stage_voice`, :attr:`ChannelType.category` and :attr:`ChannelType.forum`.
+        name: :class:`str`
+            The name of the channel.
+        position: :class:`int`
+            The position of the channel.
+        overwrites: Mapping[Union[:class:`Snowflake`, :class:`CreateGuildRole`], :class:`PermissionOverwrite`]
+            The permission overwrites for the channel.
+        **kwargs
+            Additional keyword arguments to pass to the channel creation. These are channel type specific.
+            Valid keyword arguments per type are:
+            +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
+            |            Channel Type           |                                                       Valid Arguments                                                      |
+            +===================================+============================================================================================================================+
+            | :attr:`.ChannelType.text`         | ``category, news, topic, slowmode_delay, nsfw, overwrites, default_auto_archive_duration, default_thread_slowmode_delay``  |    
+            +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
+            | :attr:`.ChannelType.voice`        | ``category, bitrate, user_limit, rtc_region, video_quality_mode, overwrites``                                              |
+            +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
+            | :attr:`.ChannelType.stage_voice`  | ``category, bitrate, user_limit, rtc_region, video_quality_mode, overwrites``                                              |
+            +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
+            | :attr:`.ChannelType.category`     | ``overwrites``                                                                                                             |
+            +----------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
+            | :attr:`.ChannelType.forum`        | ``topic, category, slowmode_delay, nsfw, overwrites, default_auto_archive_duration, default_thread_slowmode_delay,         |
+            |                                        default_sort_order, default_reaction_emoji, default_layout, available_tags``                                            |
+            +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------+
+
+            All keyword arguments default to ``MISSING``.
+
+        Example
+        -------
+        .. code-block:: python3
+            create_guild = client.create_guild(name='My Guild')
+            # adding a text channel called 'bot-commands'
+            create_guild.add_channel(discord.ChannelType.text, 'bot-commands')
+            # adding a role called 'Admins'	
+            create_guild.add_role('Admins')
+            # category channels can be created and channels can be added to them
+            category = create_guild.add_channel(discord.ChannelType.category, 'information')
+            # adding a text channel called 'rules' to the category
+            create_guild.add_channel(discord.ChannelType.text, 'rules', category=category)
+
+            # creating the guild
+            guild = await create_guild
+            # or await create_guild.create()
+
+        Raises
+        ------
+        TypeError
+            - A not supported channel type was passed.
+            - An invalid type was passed to the following parameters: ``overwrites, default_sort_order, default_reaction_emoji, default_layout, video_quality_mode``.
+        ValueError
+            - An invalid value was passed to the ``default_reaction_emoji`` parameter.
+            - Value passed to ``category`` is not valid.
+
+
+        Returns
+        -------
+        :class:`.CreateGuildChannel`
+            The created channel. This can be used to add channels to a category and to roles to the channel overwrites.
+        """
         kwargs_per_type: Dict[ChannelType, Tuple[str, ...]]= {
             ChannelType.text: ('category', 'news', 'topic', 'slowmode_delay', 'nsfw', 'overwrites', 'default_auto_archive_duration', 'default_thread_slowmode_delay'),
             ChannelType.voice: ('category', 'bitrate', 'user_limit', 'rtc_region', 'video_quality_mode', 'overwrites'),
@@ -363,7 +504,7 @@ class CreateGuild:
             allow, deny = perm.pair()
             payload = {'allow': allow.value, 'deny': deny.value, 'id': target.id}
 
-            if isinstance(target, Role):
+            if isinstance(target, CreateGuildRole):
                 payload['type'] = abc._Overwrites.ROLE
             else:
                 payload['type'] = abc._Overwrites.MEMBER
@@ -379,6 +520,8 @@ class CreateGuild:
             if parent_id:
                 if parent_id not in self._channels:
                     raise ValueError(f"No such category with ID {parent_id}")
+                if self._channels[parent_id].type is not ChannelType.category:
+                    raise ValueError(f"Channel with ID {parent_id} is not a category")
 
                 options["parent_id"] = parent_id
 
@@ -443,13 +586,10 @@ class CreateGuild:
         self._channels[channel.id] = channel
         return channel
             
-
-
-
     @overload
-    async def create_role(
+    def add_role(
         self,
-        name: str,
+        name: str = ...,
         *,
         permissions: Permissions = ...,
         colour: Union[Colour, int] = ...,
@@ -460,9 +600,9 @@ class CreateGuild:
         ...
 
     @overload
-    async def create_role(
+    def add_role(
         self,
-        name: str,
+        name: str = ...,
         *,
         permissions: Permissions = ...,
         color: Union[Colour, int] = ...,
@@ -472,9 +612,9 @@ class CreateGuild:
     ) -> CreateGuildRole:
         ...
 
-    async def create_role(
+    def add_role(
         self,
-        name: str,
+        name: str = MISSING,
         *,
         permissions: Permissions = MISSING,
         color: Union[Colour, int] = MISSING,
@@ -483,7 +623,29 @@ class CreateGuild:
         display_icon: Union[bytes, str] = MISSING,
         mentionable: bool = MISSING,
     ) -> CreateGuildRole:
+        """Add a role to the guild to be created.
 
+        Parameters
+        -----------
+        name: :class:`str`
+            The role name. Defaults to 'new role'.
+        permissions: :class:`Permissions`
+            The permissions to have. Defaults to no permissions.
+        colour: Union[:class:`Colour`, :class:`int`]
+            The colour for the role. Defaults to :meth:`Colour.default`.
+            This is aliased to ``color`` as well.
+        hoist: :class:`bool`
+            Indicates if the role should be shown separately in the member list.
+            Defaults to ``False``.
+        display_icon: Union[:class:`bytes`, :class:`str`]
+            A :term:`py:bytes-like object` representing the icon
+            or :class:`str` representing unicode emoji that should be used as a role icon.
+            Only PNG/JPEG is supported.
+            This is only available to guilds that contain ``ROLE_ICONS`` in :attr:`features`.
+        mentionable: :class:`bool`
+            Indicates if the role should be mentionable by others.
+            Defaults to ``False``.
+        """
         options: Dict[str, Any] = {}
         if permissions is not MISSING:
             options['permissions'] = str(permissions.value)
@@ -507,6 +669,9 @@ class CreateGuild:
 
         if mentionable is not MISSING:
             options['mentionable'] = mentionable
+
+        if name is MISSING:
+            name = 'new role'
 
         role = CreateGuildRole(name, **options)
         self._roles[role.id] = role
