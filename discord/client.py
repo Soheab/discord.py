@@ -2326,6 +2326,10 @@ class Client:
         ----------
         name: :class:`str`
             The name of the guild. 
+        code: :class:`str`
+            The code for a template to create the guild with.  Only ``name`` and ``icon`` are used if this is not ``MISSING``.
+
+            .. versionadded:: 1.4
         icon: Optional[:class:`bytes`]
             The :term:`py:bytes-like object` representing the icon. See :meth:`.ClientUser.edit`
             for more details on what is expected.
@@ -2347,10 +2351,6 @@ class Client:
             The explicit content filter for the guild. Defaults to :attr:`.ContentFilter.disabled`
 
             ..versionadded:: 2.4
-        code: :class:`str`
-            The code for a template to create the guild with.  Only ``name`` and ``icon`` are used if this is not ``MISSING``.
-
-            .. versionadded:: 1.4
 
         Raises
         ------
@@ -2359,7 +2359,7 @@ class Client:
         ValueError
             Invalid icon image format given. Must be PNG or JPG.
         TypeError
-            - Invalid type for one of the following parameters, ``system_channel_flags, verification_level, default_notifications, explicit_content_filter``.
+            Invalid type for one of the following parameters: ``system_channel_flags, verification_level, default_notifications, explicit_content_filter``.
 
         Returns
         -------
