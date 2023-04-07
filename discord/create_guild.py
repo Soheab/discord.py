@@ -446,10 +446,10 @@ class CreateGuild:
         channel = CreateGuildChannel(channel_type, name, overwrites=overwrites, position=position, **options)
         if channel_type is ChannelType.text:
             if kwargs.get('system_channel', False):
-                self.system_channel = channel.id
+                self.system_channel = channel
         elif channel_type is ChannelType.voice:
             if kwargs.get('afk_channel', False):
-                self.afk_channel = channel.id
+                self.afk_channel = channel
 
         self._channels[channel.id] = channel
         return channel
