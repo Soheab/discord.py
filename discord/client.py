@@ -2281,17 +2281,22 @@ class Client:
             for more details on what is expected.
         afk_timeout: :class:`int`
             The number of seconds until someone is moved to the AFK channel.
+
+            ..versionadded:: 2.4
         system_channel_flags: :class:`.SystemChannelFlags`
             The settings for the system channel.
         verification_level: :class:`.VerificationLevel`
-            The verification level for the guild.
             The verification level for the guild. Defaults to :attr:`.VerificationLevel.none`
+
+            ..versionadded:: 2.4
         default_notifications: :class:`.NotificationLevel`
-            The default notification level for the guild.
             The default notification level for the guild. Defaults to :attr:`.NotificationLevel.all_messages`
+
+            ..versionadded:: 2.4
         explicit_content_filter: :class:`.ContentFilter`
-            The explicit content filter for the guild.
             The explicit content filter for the guild. Defaults to :attr:`.ContentFilter.disabled`
+
+            ..versionadded:: 2.4
         code: :class:`str`
             The code for a template to create the guild with.  Only ``name`` and ``icon`` are used if this is not ``MISSING``.
 
