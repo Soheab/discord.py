@@ -341,6 +341,7 @@ class Member(discord.abc.Messageable, _UserTag):
         banner: Optional[Asset]
         accent_color: Optional[Colour]
         accent_colour: Optional[Colour]
+        has_discriminator: Callable[[], bool]
 
     def __init__(self, *, data: MemberWithUserPayload, guild: Guild, state: ConnectionState):
         self._state: ConnectionState = state
@@ -368,8 +369,8 @@ class Member(discord.abc.Messageable, _UserTag):
 
     def __repr__(self) -> str:
         return (
-            f'<Member id={self._user.id} name={self._user.name!r} discriminator={self._user.discriminator!r}'
-            f' bot={self._user.bot} nick={self.nick!r} guild={self.guild!r}>'
+            f'<Member id={self._user.id} name={self._user.name!r} bot={self._user.bot}'
+            f' nick={self.nick!r} guild={self.guild!r}>'
         )
 
     def __eq__(self, other: object) -> bool:
@@ -463,12 +464,12 @@ class Member(discord.abc.Messageable, _UserTag):
 
     def _update_inner_user(self, user: UserPayload) -> Optional[Tuple[User, User]]:
         u = self._user
-        original = (u.name, u._avatar, u.discriminator, u._public_flags)
+        original = (u.name, u._avatar, u._public_flags)
         # These keys seem to always be available
-        modified = (user['username'], user['avatar'], user['discriminator'], user.get('public_flags', 0))
+        modified = (user['username'], user['avatar'], user.get('public_flags', 0))
         if original != modified:
             to_return = User._copy(self._user)
-            u.name, u._avatar, u.discriminator, u._public_flags = modified
+            u.name, u._avatar, u._public_flags = modified
             # Signal to dispatch on_user_update
             return to_return, u
 

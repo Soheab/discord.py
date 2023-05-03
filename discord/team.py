@@ -138,6 +138,5 @@ class TeamMember(BaseUser):
 
     def __repr__(self) -> str:
         return (
-            f'<{self.__class__.__name__} id={self.id} name={self.name!r} '
-            f'discriminator={self.discriminator!r} membership_state={self.membership_state!r}>'
+            f'<{self.__class__.__name__} id={self.id} name={self.name!r} membership_state={self.membership_state!r}>'
         )

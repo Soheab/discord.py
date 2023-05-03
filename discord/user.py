@@ -92,12 +92,14 @@ class BaseUser(_UserTag):
 
     def __repr__(self) -> str:
         return (
-            f"<BaseUser id={self.id} name={self.name!r} discriminator={self.discriminator!r}"
-            f" bot={self.bot} system={self.system}>"
+            f"<BaseUser id={self.id} name={self.name!r} bot={self.bot} system={self.system}>"
         )
 
     def __str__(self) -> str:
-        return f'{self.name}#{self.discriminator}'
+        if self.has_discriminator():
+            return f'{self.name}#{self.discriminator}'
+
+        return self.name
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, _UserTag) and other.id == self.id
@@ -111,7 +113,7 @@ class BaseUser(_UserTag):
     def _update(self, data: Union[UserPayload, PartialUserPayload]) -> None:
         self.name = data['username']
         self.id = int(data['id'])
-        self.discriminator = data['discriminator']
+        self.discriminator = data.get('discriminator', '0')
         self._avatar = data['avatar']
         self._banner = data.get('banner', None)
         self._accent_colour = data.get('accent_color', None)
@@ -136,13 +138,16 @@ class BaseUser(_UserTag):
         return self
 
     def _to_minimal_user_json(self) -> Dict[str, Any]:
-        return {
+        base = {
             'username': self.name,
             'id': self.id,
             'avatar': self._avatar,
-            'discriminator': self.discriminator,
             'bot': self.bot,
         }
+        if self.has_discriminator():
+            base['discriminator'] = self.discriminator
+
+        return base
 
     @property
     def public_flags(self) -> PublicUserFlags:
@@ -285,6 +290,10 @@ class BaseUser(_UserTag):
 
         return any(user.id == self.id for user in message.mentions)
 
+    def has_discriminator(self) -> bool:
+        """:class:`bool`: Whether the user has a legacy discriminator."""
+        return self.discriminator not in ("0", "#0", None)
+
 
 class ClientUser(BaseUser):
     """Represents your Discord user.
@@ -343,8 +352,8 @@ class ClientUser(BaseUser):
 
     def __repr__(self) -> str:
         return (
-            f'<ClientUser id={self.id} name={self.name!r} discriminator={self.discriminator!r}'
-            f' bot={self.bot} verified={self.verified} mfa_enabled={self.mfa_enabled}>'
+            f'<ClientUser id={self.id} name={self.name!r} bot={self.bot}'
+            f' verified={self.verified} mfa_enabled={self.mfa_enabled}>'
         )
 
     def _update(self, data: UserPayload) -> None:
@@ -448,7 +457,7 @@ class User(BaseUser, discord.abc.Messageable):
     __slots__ = ('__weakref__',)
 
     def __repr__(self) -> str:
-        return f'<User id={self.id} name={self.name!r} discriminator={self.discriminator!r} bot={self.bot}>'
+        return f'<User id={self.id} name={self.name!r} bot={self.bot}>'
 
     async def _get_channel(self) -> DMChannel:
         ch = await self.create_dm()

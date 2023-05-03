@@ -356,7 +356,7 @@ class ConnectionState(Generic[ClientT]):
             return self._users[user_id]
         except KeyError:
             user = User(state=self, data=data)
-            if user.discriminator != '0000':
+            if user.has_discriminator() and user.discriminator != '0000':
                 self._users[user_id] = user
             return user
 

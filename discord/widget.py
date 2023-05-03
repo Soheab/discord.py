@@ -192,7 +192,7 @@ class WidgetMember(BaseUser):
 
     def __repr__(self) -> str:
         return (
-            f"<WidgetMember name={self.name!r} discriminator={self.discriminator!r}" f" bot={self.bot} nick={self.nick!r}>"
+            f"<WidgetMember name={self.name!r} " f" bot={self.bot} nick={self.nick!r}>"
         )
 
     @property
