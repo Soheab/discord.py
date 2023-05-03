@@ -49,6 +49,11 @@ if TYPE_CHECKING:
     )
 
 
+if TYPE_CHECKING:
+    _Discriminator = str
+else:
+    from .utils import _Discriminator
+
 __all__ = (
     'User',
     'ClientUser',
@@ -85,6 +90,11 @@ class BaseUser(_UserTag):
         _banner: Optional[str]
         _accent_colour: Optional[int]
         _public_flags: int
+
+    def __new__(cls, *args, **kwargs) -> Any:
+        org = super().__new__(cls)
+        org.discriminator = _Discriminator(org)
+        return org
 
     def __init__(self, *, state: ConnectionState, data: Union[UserPayload, PartialUserPayload]) -> None:
         self._state = state

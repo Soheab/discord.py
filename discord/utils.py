@@ -1379,3 +1379,14 @@ CAMEL_CASE_REGEX = re.compile(r'(?<!^)(?=[A-Z])')
 
 def _to_kebab_case(text: str) -> str:
     return CAMEL_CASE_REGEX.sub('-', text).lower()
+
+
+if TYPE_CHECKING:
+    from .user import BaseUser
+
+class _Discriminator(str):
+    """Represents a discriminator. This class is internally used by the library to prevent a breaking change."""
+    def __new__(cls, user: BaseUser):
+        if user.has_discriminator():
+            return str.__new__(cls, user.discriminator)
+        return str.__new__(cls, '0000')
