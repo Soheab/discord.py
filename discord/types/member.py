@@ -38,7 +38,6 @@ class PartialMember(TypedDict):
     mute: bool
     flags: int
 
-
 class Member(PartialMember, total=False):
     avatar: str
     user: User
@@ -47,6 +46,7 @@ class Member(PartialMember, total=False):
     pending: bool
     permissions: str
     communication_disabled_until: str
+    unusual_dm_activity_until: str
 
 
 class _OptionalMemberWithUser(PartialMember, total=False):
@@ -56,6 +56,7 @@ class _OptionalMemberWithUser(PartialMember, total=False):
     pending: bool
     permissions: str
     communication_disabled_until: str
+    unusual_dm_activity_until: str
 
 
 class MemberWithUser(_OptionalMemberWithUser):

@@ -317,6 +317,7 @@ class Member(discord.abc.Messageable, _UserTag):
         'pending',
         'nick',
         'timed_out_until',
+        'unusual_dm_activity_until',
         '_permissions',
         '_client_status',
         '_user',
@@ -363,6 +364,7 @@ class Member(discord.abc.Messageable, _UserTag):
             self._permissions = None
 
         self.timed_out_until: Optional[datetime.datetime] = utils.parse_time(data.get('communication_disabled_until'))
+        self.unusual_dm_activity_until: Optional[datetime.datetime] = utils.parse_time(data.get('unusual_dm_activity_until'))
 
     def __str__(self) -> str:
         return str(self._user)
@@ -395,6 +397,7 @@ class Member(discord.abc.Messageable, _UserTag):
         self.nick = data.get('nick', None)
         self.pending = data.get('pending', False)
         self.timed_out_until = utils.parse_time(data.get('communication_disabled_until'))
+        self.unusual_dm_activity_until = utils.parse_time(data.get('unusual_dm_activity_until'))
         self._flags = data.get('flags', 0)
 
     @classmethod
@@ -450,6 +453,7 @@ class Member(discord.abc.Messageable, _UserTag):
 
         self.premium_since = utils.parse_time(data.get('premium_since'))
         self.timed_out_until = utils.parse_time(data.get('communication_disabled_until'))
+        self.unusual_dm_activity_until = utils.parse_time(data.get('unusual_dm_activity_until'))
         self._roles = utils.SnowflakeList(map(int, data['roles']))
         self._avatar = data.get('avatar')
         self._flags = data.get('flags', 0)
@@ -1124,4 +1128,18 @@ class Member(discord.abc.Messageable, _UserTag):
         """
         if self.timed_out_until is not None:
             return utils.utcnow() < self.timed_out_until
+        return False
+
+    def has_unusual_dm_activity(self) -> bool:
+        """Returns whether this member has the status "unusual DM activity"
+
+        .. versionadded:: 2.4
+
+        Returns
+        --------
+        :class:`bool`
+            ``True`` if the member has unusual DM activity. ``False`` otherwise.
+        """
+        if self.unusual_dm_activity_until is not None:
+            return utils.utcnow() < self.unusual_dm_activity_until
         return False
