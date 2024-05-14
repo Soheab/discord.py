@@ -28,6 +28,7 @@ from __future__ import annotations
 import asyncio
 import collections
 import collections.abc
+import datetime
 import inspect
 import importlib.util
 import sys
@@ -36,6 +37,7 @@ import types
 from typing import (
     Any,
     Callable,
+    Literal,
     Mapping,
     List,
     Dict,
@@ -78,6 +80,7 @@ if TYPE_CHECKING:
         CoroFunc,
         ContextT,
         MaybeAwaitableFunc,
+        Coro
     )
     from .core import Command
     from .hybrid import CommandCallback, ContextT, P
@@ -674,6 +677,439 @@ class BotBase(GroupMixin[None]):
                 self.extra_events[name].remove(func)
             except ValueError:
                 pass
+
+    # App Commands
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_raw_app_command_permissions_update"],
+    ) -> Callable[
+        [Callable[[discord.RawAppCommandPermissionsUpdateEvent], Coro[Any]]],
+        Callable[[discord.RawAppCommandPermissionsUpdateEvent], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_app_command_completion"],
+    ) -> Callable[
+        [Callable[[
+            discord.Interaction,
+            Union[discord.app_commands.Command[Any, ..., Any], discord.app_commands.ContextMenu],
+        ], Coro[Any]]],
+        Callable[[
+            discord.Interaction,
+            Union[discord.app_commands.Command[Any, ..., Any], discord.app_commands.ContextMenu],
+        ], Coro[Any]]
+    ]:
+        ...
+
+    # AutoMod
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            "on_automod_rule_create",
+            "on_automod_rule_update",
+            "on_automod_rule_delete",
+        ],
+    ) -> Callable[
+        [Callable[[discord.AutoModRule], Coro[Any]]],
+        Callable[[discord.AutoModRule], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            "on_automod_action",
+        ],
+    ) -> Callable[
+        [Callable[[discord.AutoModAction], Coro[Any]]],
+        Callable[[discord.AutoModAction], Coro[Any]]
+    ]:
+        ...
+
+    # Channels
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            "on_guild_channel_delete",
+            "on_guild_channel_create",
+        ],
+    ) -> Callable[
+        [Callable[[discord.abc.GuildChannel], Coro[Any]]],
+        Callable[[discord.abc.GuildChannel], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_guild_channel_update"],
+    ) -> Callable[
+        [Callable[[
+            discord.abc.GuildChannel,
+            discord.abc.GuildChannel,
+        ], Coro[Any]]],
+        Callable[[
+            discord.abc.GuildChannel,
+            discord.abc.GuildChannel,
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_guild_channel_pins_update"],
+    ) -> Callable[
+        [Callable[[
+            Union[discord.abc.GuildChannel, discord.Thread],
+            Optional[datetime.datetime],
+        ], Coro[Any]]],
+        Callable[[
+            Union[discord.abc.GuildChannel, discord.Thread],
+            Optional[datetime.datetime],
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_private_channel_update"],
+    ) -> Callable[
+        [Callable[[
+            discord.GroupChannel,
+            discord.GroupChannel,
+        ], Coro[Any]]],
+        Callable[[
+            discord.GroupChannel,
+            discord.GroupChannel,
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_private_channel_pins_update"],
+    ) -> Callable[
+        [Callable[[
+            discord.abc.PrivateChannel,
+            Optional[datetime.datetime],
+        ], Coro[Any]]],
+        Callable[[
+            discord.abc.PrivateChannel,
+            Optional[datetime.datetime],
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_typing"],
+    ) -> Callable[
+        [Callable[[
+            discord.abc.Messageable,
+            Union[discord.User, discord.Member],
+            datetime.datetime,
+        ], Coro[Any]]],
+        Callable[[
+            discord.abc.Messageable,
+            Union[discord.User, discord.Member],
+            datetime.datetime,
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal["on_raw_typing"],
+    ) -> Callable[
+        [Callable[[
+            discord.RawTypingEvent
+        ], Coro[Any]]],
+        Callable[[
+            discord.RawTypingEvent
+        ], Coro[Any]]
+    ]:
+        ...
+
+    # Connection
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            "on_connect",
+            "on_disconnect",
+            "on_ready", # Gateway
+            "on_resumed", # Gateway
+
+        ],
+    ) -> Callable[
+        [Callable[[
+        ], Coro[Any]]],
+        Callable[[
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            "on_shard_connect",
+            "on_shard_disconnect",
+            'on_shard_ready', # Gateway
+            'on_shard_resumed', # Gateway
+
+        ],
+    ) -> Callable[
+        [Callable[[
+            int,
+        ], Coro[Any]]],
+        Callable[[
+            int
+        ], Coro[Any]]
+    ]:
+        ...
+
+    # Debug
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_socket_event_type',
+            'on_socket_raw_receive',
+        ],
+    ) -> Callable[
+        [Callable[[
+            str,
+        ], Coro[Any]]],
+        Callable[[
+            str
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_socket_raw_send',
+        ],
+    ) -> Callable[
+        [Callable[[
+            Union[bytes, str],
+        ], Coro[Any]]],
+        Callable[[
+            Union[bytes, str]
+        ], Coro[Any]]
+    ]:
+        ...
+
+    # Guilds
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_guild_available',
+            'on_guild_unavailable',
+            'on_guild_join',
+            'on_guild_remove',
+            'on_guild_integrations_update',  # Integrations
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.Guild
+        ], Coro[Any]]],
+        Callable[[
+            discord.Guild
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_guild_update',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.Guild,
+            discord.Guild,
+        ], Coro[Any]]],
+        Callable[[
+            discord.Guild,
+            discord.Guild,
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_guild_emojis_update',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.Guild,
+            Sequence[discord.Emoji],
+            Sequence[discord.Emoji],
+        ], Coro[Any]]],
+        Callable[[
+            discord.Guild,
+            Sequence[discord.Emoji],
+            Sequence[discord.Emoji],
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_guild_stickers_update',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.Guild,
+            Sequence[discord.GuildSticker],
+            Sequence[discord.GuildSticker],
+        ], Coro[Any]]],
+        Callable[[
+            discord.Guild,
+            Sequence[discord.GuildSticker],
+            Sequence[discord.GuildSticker],
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_audit_log_entry_create',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.AuditLogEntry
+        ], Coro[Any]]],
+        Callable[[
+            discord.AuditLogEntry
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_invite_create',
+            'on_invite_delete',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.Invite
+        ], Coro[Any]]],
+        Callable[[
+            discord.Invite
+        ], Coro[Any]]
+    ]:
+        ...
+
+    # Integrations
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_integration_create',
+            'on_integration_update',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.Integration
+        ], Coro[Any]]],
+        Callable[[
+            discord.Integration
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_webhooks_update',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.abc.GuildChannel
+        ], Coro[Any]]],
+        Callable[[
+            discord.abc.GuildChannel
+        ], Coro[Any]]
+    ]:
+        ...
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_raw_integration_delete',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.RawIntegrationDeleteEvent,
+        ], Coro[Any]]],
+        Callable[[
+            discord.RawIntegrationDeleteEvent,
+        ], Coro[Any]]
+    ]:
+        ...
+
+    # Interactions
+
+    @overload
+    def listen(
+        self,
+        name: Literal[
+            'on_interaction',
+        ],
+    ) -> Callable[
+        [Callable[[
+            discord.Interaction,
+        ], Coro[Any]]],
+        Callable[[
+            discord.Interaction,
+        ], Coro[Any]]
+    ]:
+        ...
+
+    # Members
+
+
+
+
+    @overload
+    def listen(self, name: str = MISSING) -> Callable[[CFT], CFT]:
+        ...
 
     def listen(self, name: str = MISSING) -> Callable[[CFT], CFT]:
         """A decorator that registers another function as an external
