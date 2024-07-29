@@ -266,7 +266,8 @@ def _context_menu_annotation(annotation: Any, *, _none: type = NoneType) -> AppC
     return AppCommandType.user
 
 
-def _populate_descriptions(params: Dict[str, CommandParameter], descriptions: Dict[str, Any]) -> None:
+def _populate_descriptions(cmd: Command, descriptions: Dict[str, Any]) -> None:
+    params = cmd._params
     for name, param in params.items():
         description = descriptions.pop(name, MISSING)
         if description is MISSING:
@@ -281,17 +282,21 @@ def _populate_descriptions(params: Dict[str, CommandParameter], descriptions: Di
         else:
             param.description = description
 
+        if cmd._auto_locale_strings:
+            param._convert_to_locale_strings()
+
     if descriptions:
         first = next(iter(descriptions))
         raise TypeError(f'unknown parameter given: {first}')
 
 
-def _populate_renames(params: Dict[str, CommandParameter], renames: Dict[str, Union[str, locale_str]]) -> None:
+def _populate_renames(cmd: Command, renames: Dict[str, Union[str, locale_str]]) -> None:
+    params = cmd._params
     rename_map: Dict[str, Union[str, locale_str]] = {}
 
     # original name to renamed name
 
-    for name in params.keys():
+    for name, param in params.items():
         new_name = renames.pop(name, MISSING)
 
         if new_name is MISSING:
@@ -307,14 +312,17 @@ def _populate_renames(params: Dict[str, CommandParameter], renames: Dict[str, Un
             validate_name(new_name.message)
 
         rename_map[name] = new_name
-        params[name]._rename = new_name
+        param._rename = new_name
+        if cmd._auto_locale_strings:
+            param._convert_to_locale_strings()
 
     if renames:
         first = next(iter(renames))
         raise ValueError(f'unknown parameter given: {first}')
 
 
-def _populate_choices(params: Dict[str, CommandParameter], all_choices: Dict[str, List[Choice]]) -> None:
+def _populate_choices(cmd: Command, all_choices: Dict[str, List[Choice]]) -> None:
+    params = cmd._params
     for name, param in params.items():
         choices = all_choices.pop(name, MISSING)
         if choices is MISSING:
@@ -333,6 +341,8 @@ def _populate_choices(params: Dict[str, CommandParameter], all_choices: Dict[str
             raise TypeError('choices must all have the same inner option type as the parameter choice type')
 
         param.choices = choices
+        if cmd._auto_locale_strings:
+            param._convert_to_locale_strings()
 
     if all_choices:
         first = next(iter(all_choices))
@@ -363,7 +373,7 @@ def _populate_autocomplete(params: Dict[str, CommandParameter], autocomplete: Di
         raise TypeError(f'unknown parameter given: {first}')
 
 
-def _extract_parameters_from_callback(func: Callable[..., Any], globalns: Dict[str, Any]) -> Dict[str, CommandParameter]:
+def _extract_parameters_from_callback(cmd: Command, func: Callable[..., Any], globalns: Dict[str, Any]) -> Dict[str, CommandParameter]:
     params = inspect.signature(func).parameters
     cache = {}
     required_params = is_inside_class(func) + 1
@@ -395,21 +405,21 @@ def _extract_parameters_from_callback(func: Callable[..., Any], globalns: Dict[s
             if param.description is MISSING:
                 param.description = '…'
     if descriptions:
-        _populate_descriptions(result, descriptions)
+        _populate_descriptions(cmd, descriptions)
 
     try:
         renames = func.__discord_app_commands_param_rename__
     except AttributeError:
         pass
     else:
-        _populate_renames(result, renames.copy())
+        _populate_renames(cmd, renames.copy())
 
     try:
         choices = func.__discord_app_commands_param_choices__
     except AttributeError:
         pass
     else:
-        _populate_choices(result, choices.copy())
+        _populate_choices(cmd, choices.copy())
 
     try:
         autocomplete = func.__discord_app_commands_param_autocomplete__
@@ -684,7 +694,7 @@ class Command(Generic[GroupT, P, T]):
         except AttributeError:
             pass
 
-        self._params: Dict[str, CommandParameter] = _extract_parameters_from_callback(callback, callback.__globals__)
+        self._params: Dict[str, CommandParameter] = _extract_parameters_from_callback(self, callback, callback.__globals__)
         self.checks: List[Check] = getattr(callback, '__discord_app_commands_checks__', [])
         self._guild_ids: Optional[List[int]] = guild_ids or getattr(
             callback, '__discord_app_commands_default_guilds__', None
@@ -706,7 +716,8 @@ class Command(Generic[GroupT, P, T]):
         if self._guild_ids is not None and self.parent is not None:
             raise ValueError('child commands cannot have default guilds set, consider setting them in the parent instead')
 
-        if auto_locale_strings:
+        self._auto_locale_strings: bool = auto_locale_strings
+        if self._auto_locale_strings:
             self._convert_to_locale_strings()
 
     def _convert_to_locale_strings(self) -> None:
@@ -2176,7 +2187,7 @@ def describe(**parameters: Union[str, locale_str]) -> Callable[[T], T]:
 
     def decorator(inner: T) -> T:
         if isinstance(inner, Command):
-            _populate_descriptions(inner._params, parameters)
+            _populate_descriptions(inner, parameters)
         else:
             try:
                 inner.__discord_app_commands_param_description__.update(parameters)  # type: ignore # Runtime attribute access
@@ -2219,7 +2230,7 @@ def rename(**parameters: Union[str, locale_str]) -> Callable[[T], T]:
 
     def decorator(inner: T) -> T:
         if isinstance(inner, Command):
-            _populate_renames(inner._params, parameters)
+            _populate_renames(inner, parameters)
         else:
             try:
                 inner.__discord_app_commands_param_rename__.update(parameters)  # type: ignore # Runtime attribute access
@@ -2288,7 +2299,7 @@ def choices(**parameters: List[Choice[ChoiceT]]) -> Callable[[T], T]:
 
     def decorator(inner: T) -> T:
         if isinstance(inner, Command):
-            _populate_choices(inner._params, parameters)
+            _populate_choices(inner, parameters)
         else:
             try:
                 inner.__discord_app_commands_param_choices__.update(parameters)  # type: ignore # Runtime attribute access
