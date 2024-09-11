@@ -2614,6 +2614,119 @@ class ForumChannel(discord.abc.GuildChannel, Hashable):
 
         return result
 
+    async def edit_tag(
+        self,
+        tag: Snowflake,
+        /,
+        *,
+        name: str = MISSING,
+        emoji: Optional[PartialEmoji] = MISSING,
+        moderated: bool = MISSING,
+        reason: Optional[str] = None,
+    ) -> ForumTag:
+        """|coro|
+
+        Edits a tag in this forum.
+
+        You must have :attr:`~Permissions.manage_channels` to do this.
+
+        .. versionadded:: 2.5
+
+        Parameters
+        ----------
+        tag: :class:`abc.Snowflake`
+            The tag to edit.
+        name: :class:`str`
+            The new name of the tag.
+        emoji: Optional[:class:`PartialEmoji`]
+            The new emoji to use for the tag. Can be ``None`` to remove the emoji.
+        moderated: :class:`bool`
+            Whether the tag can only be applied by moderators.
+        reason: Optional[:class:`str`]
+            The reason for editing this tag. Shows up on the audit log.
+
+        Raises
+        ------
+        Forbidden
+            You do not have permissions to edit a tag in this forum.
+        HTTPException
+            Editing the tag failed.
+        ValueError
+            The tag was not found.
+
+        Returns
+        -------
+        :class:`ForumTag`
+            The newly edited tag.
+        """
+        prior_tags = self._available_tags.copy()
+        prior_tag = prior_tags.get(tag.id)
+        if prior_tag is None:
+            raise ValueError('Tag not found.')
+
+        if name is MISSING:
+            name = prior_tag.name
+
+        if emoji is MISSING:
+            if emoji is None:
+                emoji = None
+            else:
+                emoji = prior_tag.emoji
+
+        if moderated is MISSING:
+            moderated = prior_tag.moderated
+
+        result = ForumTag(name=name, emoji=emoji, moderated=moderated)
+        prior_tags[tag.id] = result
+        payload = await self._state.http.edit_channel(
+            self.id,
+            available_tags=[tag.to_dict() for tag in prior_tags.values()],
+            reason=reason,
+        )
+
+        try:
+            new_tags = {tag["name"]: tag for tag in payload['available_tags']}  # type: ignore
+            result.id = new_tags[name]['id']  # type: ignore
+        except (KeyError, IndexError, ValueError):
+            pass
+
+        return result
+
+    async def delete_tag(self, tag: Snowflake, /, *, reason: Optional[str] = None) -> None:
+        """|coro|
+
+        Deletes a tag in this forum.
+
+        You must have :attr:`~Permissions.manage_channels` to do this.
+
+        .. versionadded:: 2.5
+
+        Parameters
+        ----------
+        tag: :class:`abc.Snowflake`
+            The tag to delete.
+        reason: Optional[:class:`str`]
+            The reason for deleting this tag. Shows up on the audit log.
+
+        Raises
+        ------
+        Forbidden
+            You do not have permissions to delete a tag in this forum.
+        HTTPException
+            Deleting the tag failed.
+        ValueError
+            The tag was not found.
+        """
+        prior_tags = self._available_tags.copy()
+        prior_tag = prior_tags.get(tag.id)
+        if prior_tag is None:
+            raise ValueError('Tag not found.')
+
+        del prior_tags[tag.id]
+        await self._state.http.edit_channel(
+            self.id, available_tags=[tag.to_dict() for tag in prior_tags.values()], reason=reason
+        )
+
     async def create_thread(
         self,
         *,
