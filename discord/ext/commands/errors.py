@@ -24,6 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple, Union
 
 from discord.errors import ClientException, DiscordException
@@ -105,6 +106,7 @@ __all__ = (
     'MissingRequiredFlag',
     'HybridCommandError',
     'RangeError',
+    'NoMatch',
 )
 
 
@@ -1185,6 +1187,28 @@ class MissingFlagArgument(FlagError):
     def __init__(self, flag: Flag) -> None:
         self.flag: Flag = flag
         super().__init__(f'Flag {flag.name!r} does not have an argument')
+
+class NoMatch(ArgumentParsingError):
+    """An exception raised when the parser fails to match a user's input to a pattern.
+
+    This inherits from :exc:`ArgumentParsingError`.
+
+    .. versionadded:: 2.5
+
+    Attributes
+    -----------
+    pattern: :class:`re.Pattern`
+        The pattern that failed to match.
+    argument: :class:`str`
+        The argument that failed to match.
+    """
+
+    def __init__(self, pattern: re.Pattern, argument: str) -> None:
+        self.pattern: re.Pattern = pattern
+        self.argument: str = argument
+        super().__init__(
+            f'{argument!r} did not match the required pattern: {pattern.pattern}'
+        )
 
 
 class HybridCommandError(CommandError):

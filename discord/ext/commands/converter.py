@@ -85,6 +85,7 @@ __all__ = (
     'clean_content',
     'Greedy',
     'Range',
+    'RegexConverter',
     'run_converters',
 )
 
@@ -950,6 +951,82 @@ class ScheduledEventConverter(IDConverter[discord.ScheduledEvent]):
 
         return result
 
+
+class RegexConverter(Converter[str]):
+    """Converter that checks if the argument matches a custom regular expression.
+
+    This converter is useful for creating custom validation logic.
+
+    .. versionadded:: 2.5
+
+    Parameters
+    -----------
+    pattern: Union[:class:`str`, :class:`re.Pattern`]
+        The pattern to match against. If a string is provided, it will be compiled into a regular expression.
+    case_insensitive: :class:`bool`
+        Whether the pattern should be case insensitive.
+
+        This sets the :attr:`re.IGNORECASE` flag.
+        This cannot be used with a pre-compiled pattern.
+
+        Defaults to ``False``.
+    force_ascii: :class:`bool`
+        Whether to force ASCII encoding on the pattern.
+
+        This sets the :attr:`re.ASCII` flag.
+        This cannot be used with a pre-compiled pattern.
+
+        Defaults to ``False``.
+    multiline: :class:`bool`
+        Whether the pattern should match across multiple lines.
+
+        This sets the :attr:`re.MULTILINE` flag.
+        This cannot be used with a pre-compiled pattern.
+
+        Defaults to ``False``.
+    flags: Union[:class:`int`, :class:`re.RegexFlag`]
+        The flags to pass to the regular expression compiler.
+
+        :attr:`re.IGNORECASE`, :attr:`re.ASCII` and :attr:`re.MULTILINE`
+        are set to this if the respective parameters are set to ``True``.
+
+        This cannot be used with a pre-compiled pattern.
+
+        Defaults to ``0``.
+
+    Attributes
+    ------------
+    pattern: :class:`re.Pattern`
+        The compiled regular expression pattern.
+    """
+
+    def __init__(
+        self,
+        pattern: Union[str, re.Pattern[str]],
+        case_insensitive: bool = False,
+        force_ascii: bool = False,
+        multiline: bool = False,
+        flags: Union[int, re.RegexFlag] = 0,
+    ) -> None:
+        flags = flags or 0
+        if case_insensitive:
+            flags |= re.IGNORECASE
+        if force_ascii:
+            flags |= re.ASCII
+        if multiline:
+            flags |= re.MULTILINE
+
+        if flags and isinstance(pattern, re.Pattern):
+            raise ValueError('Cannot specify flags with a pre-compiled pattern')
+
+        self.pattern: re.Pattern[str] = pattern if isinstance(pattern, re.Pattern) else re.compile(pattern, flags)
+
+    async def convert(self, ctx: Context[BotT], argument: str) -> re.Match[str]:
+        match_ = self.pattern.fullmatch(argument)
+        if match_ is None:
+            raise NoMatch(self.pattern, argument)
+
+        return match_
 
 class clean_content(Converter[str]):
     """Converts the argument to mention scrubbed version of
