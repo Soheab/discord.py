@@ -208,14 +208,14 @@ class Interaction(Generic[ClientT]):
             int(k): int(v) for k, v in data.get('authorizing_integration_owners', {}).items()
         }
         try:
-            self.context = AppCommandContext._from_value([data['context']])
+            self.context = AppCommandContext._from_value([data['context']])  # pyright: ignore[reportTypedDictNotRequiredAccess]
         except KeyError:
             self.context = AppCommandContext()
 
         self.locale: Locale = try_enum(Locale, data.get('locale', 'en-US'))
         self.guild_locale: Optional[Locale]
         try:
-            self.guild_locale = try_enum(Locale, data['guild_locale'])
+            self.guild_locale = try_enum(Locale, data['guild_locale'])  # pyright: ignore[reportTypedDictNotRequiredAccess]
         except KeyError:
             self.guild_locale = None
 
