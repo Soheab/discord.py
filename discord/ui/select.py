@@ -331,8 +331,8 @@ class BaseSelect(Item[V]):
         payload: List[PossibleValue]
         try:
             resolved = Namespace._get_resolved_items(
-                interaction, data['resolved']
-            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
+                interaction, data['resolved']  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            )
             payload = list(resolved.values())
         except KeyError:
             payload = data.get("values", [])  # type: ignore

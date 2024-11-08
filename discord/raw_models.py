@@ -345,8 +345,8 @@ class RawIntegrationDeleteEvent(_RawReprMixin):
 
         try:
             self.application_id: Optional[int] = int(
-                data['application_id']
-            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
+                data['application_id']  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            )
         except KeyError:
             self.application_id: Optional[int] = None
 

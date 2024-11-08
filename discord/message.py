@@ -856,16 +856,16 @@ class MessageInteractionMetadata(Hashable):
         self.original_response_message_id: Optional[int] = None
         try:
             self.original_response_message_id = int(
-                data['original_response_message_id']
-            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
+                data['original_response_message_id']  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            )
         except KeyError:
             pass
 
         self.interacted_message_id: Optional[int] = None
         try:
             self.interacted_message_id = int(
-                data['interacted_message_id']
-            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
+                data['interacted_message_id']  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            )
         except KeyError:
             pass
 
@@ -2175,8 +2175,8 @@ class Message(PartialMessage, Hashable):
         self.poll: Optional[Poll] = None
         try:
             self.poll = Poll._from_data(
-                data=data['poll'], message=self, state=state
-            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
+                data=data['poll'], message=self, state=state  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            )
         except KeyError:
             pass
 

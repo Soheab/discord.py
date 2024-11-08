@@ -209,8 +209,8 @@ class Interaction(Generic[ClientT]):
         }
         try:
             self.context = AppCommandContext._from_value(
-                [data['context']]
-            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
+                [data['context']]  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            )
         except KeyError:
             self.context = AppCommandContext()
 
