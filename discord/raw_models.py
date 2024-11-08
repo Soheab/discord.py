@@ -344,7 +344,9 @@ class RawIntegrationDeleteEvent(_RawReprMixin):
         self.guild_id: int = int(data['guild_id'])
 
         try:
-            self.application_id: Optional[int] = int(data['application_id'])  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            self.application_id: Optional[int] = int(
+                data['application_id']
+            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
         except KeyError:
             self.application_id: Optional[int] = None
 

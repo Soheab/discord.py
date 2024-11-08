@@ -208,7 +208,9 @@ class Interaction(Generic[ClientT]):
             int(k): int(v) for k, v in data.get('authorizing_integration_owners', {}).items()
         }
         try:
-            self.context = AppCommandContext._from_value([data['context']])  # pyright: ignore[reportTypedDictNotRequiredAccess]
+            self.context = AppCommandContext._from_value(
+                [data['context']]
+            )  # pyright: ignore[reportTypedDictNotRequiredAccess]
         except KeyError:
             self.context = AppCommandContext()
 

@@ -434,7 +434,9 @@ class Guild(Hashable):
         member = self.get_member(user_id)
         if member is None:
             try:
-                member = Member(data=data['member'], state=self._state, guild=self)  # pyright: ignore[reportTypedDictNotRequiredAccess]
+                member = Member(
+                    data=data['member'], state=self._state, guild=self
+                )  # pyright: ignore[reportTypedDictNotRequiredAccess]
             except KeyError:
                 member = None
 
