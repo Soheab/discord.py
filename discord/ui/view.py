@@ -653,6 +653,7 @@ class ViewStore:
         for pattern, item in self._dynamic_items.items():
             match = pattern.fullmatch(custom_id)
             if match is not None:
+                interaction.valid = True
                 asyncio.create_task(
                     self.schedule_dynamic_item_call(component_type, item, interaction, custom_id, match),
                     name=f'discord-ui-dynamic-item-{item.__name__}-{custom_id}',
@@ -701,6 +702,7 @@ class ViewStore:
         if item is None:
             return
 
+        interaction.valid = True
         # Note, at this point the View is *not* None
         item.view._dispatch_item(item, interaction)  # type: ignore
 
@@ -715,6 +717,7 @@ class ViewStore:
             _log.debug("Modal interaction referencing unknown custom_id %s. Discarding", custom_id)
             return
 
+        interaction.valid = True
         modal._dispatch_submit(interaction, components)
 
     def remove_interaction_mapping(self, interaction_id: int) -> None:
