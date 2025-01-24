@@ -56,7 +56,7 @@ from .widget import Widget
 from .guild import Guild, GuildPreview
 from .emoji import Emoji
 from .channel import _threaded_channel_factory, PartialMessageable
-from .enums import ChannelType, EntitlementOwnerType
+from .enums import ChannelType, EntitlementOwnerType, TeamMemberRole
 from .mentions import AllowedMentions
 from .errors import *
 from .enums import Status
@@ -84,7 +84,7 @@ if TYPE_CHECKING:
 
     from typing_extensions import Self
 
-    from .abc import Messageable, PrivateChannel, Snowflake, SnowflakeTime
+    from .abc import Messageable, PrivateChannel, Snowflake, SnowflakeTime, User
     from .app_commands import Command, ContextMenu
     from .automod import AutoModAction, AutoModRule
     from .channel import DMChannel, GroupChannel
@@ -3287,3 +3287,25 @@ class Client:
 
         data = await self.http.get_application_emojis(self.application_id)
         return [Emoji(guild=Object(0), state=self._connection, data=emoji) for emoji in data['items']]
+
+    async def is_owner(self, user: User) -> bool:
+        """|coro|
+
+        Checks if a user is an owner of the current application.
+
+        This also accounts for the team members. This uses :attr:`.AppInfo.owners`.
+
+        .. versionadded:: 2.5
+
+        Parameters
+        -----------
+        user: :class:`.abc.User`
+            The user to check.
+
+        Returns
+        --------
+        :class:`bool`
+            Whether the user a an owner of the current application.
+        """
+        app: AppInfo = self._application or await self.application_info()
+        return user.id in {t.id for t in app.owners}

@@ -529,16 +529,13 @@ class BotBase(GroupMixin[None]):
             return user.id in self.owner_ids
         else:
             app: discord.AppInfo = await self.application_info()  # type: ignore
-            if app.team:
-                self.owner_ids = ids = {
-                    m.id
-                    for m in app.team.members
-                    if m.role in (discord.TeamMemberRole.admin, discord.TeamMemberRole.developer)
-                }
-                return user.id in ids
-            else:
-                self.owner_id = owner_id = app.owner.id
+            owners = app.owners
+            if len(owners) == 1:
+                self.owner_id = owner_id = owners[0].id
                 return user.id == owner_id
+
+            self.owner_ids = owner_ids = {o.id for o in owners}
+            return user.id in owner_ids
 
     def before_invoke(self, coro: CFT, /) -> CFT:
         """A decorator that registers a coroutine as a pre-invoke hook.

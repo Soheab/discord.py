@@ -24,13 +24,14 @@ DEALINGS IN THE SOFTWARE.
 
 from __future__ import annotations
 
-from typing import List, TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional, Union
 
 from . import utils
 from .asset import Asset
 from .flags import ApplicationFlags
 from .permissions import Permissions
 from .utils import MISSING
+from .enums import TeamMemberRole
 
 if TYPE_CHECKING:
     from typing import Dict, Any
@@ -44,6 +45,7 @@ if TYPE_CHECKING:
     )
     from .user import User
     from .state import ConnectionState
+    from .team import TeamMember
 
 __all__ = (
     'AppInfo',
@@ -64,6 +66,11 @@ class AppInfo:
         The application name.
     owner: :class:`User`
         The application owner.
+
+        .. note::
+
+            This is a pseudo user if the application is in a team.
+            Consider using :attr:`AppInfo.owners` to get the owners of the application instead.
     team: Optional[:class:`Team`]
         The application's team.
 
@@ -180,6 +187,7 @@ class AppInfo:
         'redirect_uris',
         'approximate_guild_count',
         'approximate_user_install_count',
+        '_cs_owners',
     )
 
     def __init__(self, state: ConnectionState, data: AppInfoPayload):
@@ -259,6 +267,26 @@ class AppInfo:
         .. versionadded:: 2.0
         """
         return ApplicationFlags._from_value(self._flags)
+
+    @utils.cached_slot_property('_cs_owners')
+    def owners(self) -> List[Union[User, TeamMember]]:
+        """The owners of the application.
+
+        .. versionadded:: 2.5
+
+        Returns
+        -------
+        List[Union[:class:`User`, :class:`TeamMember`]]
+            A list of the owners of the application.
+
+            If the application is not in a team, this will return a list
+            containing the :attr:`AppInfo.owner` of the application. Otherwise, this will return a list of the team
+            members with the following roles: :attr:`~discord.TeamMemberRole.admin`, :attr:`~discord.TeamMemberRole.developer`.
+        """
+        if not self.team:
+            return [self.owner]
+
+        return [u for u in self.team.members if u.role in (TeamMemberRole.admin, TeamMemberRole.developer)]
 
     async def edit(
         self,
