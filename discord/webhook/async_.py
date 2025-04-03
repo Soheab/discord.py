@@ -809,6 +809,8 @@ class WebhookMessage(Message):
 
         Edits the message.
 
+        .. event:: on_message_edit
+
         .. versionadded:: 1.6
 
         .. versionchanged:: 2.0
