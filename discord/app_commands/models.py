@@ -322,6 +322,8 @@ class AppCommand(Hashable):
 
         Edits the application command.
 
+        .. event:: on_raw_app_command_permissions_update
+
         Parameters
         -----------
         name: :class:`str`

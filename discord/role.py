@@ -430,6 +430,8 @@ class Role(Hashable):
 
         Edits the role.
 
+        .. event:: on_guild_role_update
+
         You must have :attr:`~Permissions.manage_roles` to do this.
 
         All fields are optional.
@@ -632,6 +634,8 @@ class Role(Hashable):
         """|coro|
 
         Deletes the role.
+
+        .. event:: on_guild_role_delete
 
         You must have :attr:`~Permissions.manage_roles` to do this.
 

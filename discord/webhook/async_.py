@@ -930,6 +930,8 @@ class WebhookMessage(Message):
 
         Deletes the message.
 
+        .. event:: on_message_delete
+
         Parameters
         -----------
         delay: Optional[:class:`float`]
@@ -1418,6 +1420,8 @@ class Webhook(BaseWebhook):
         """|coro|
 
         Deletes this Webhook.
+
+        .. event:: on_webhooks_update
 
         Parameters
         ------------

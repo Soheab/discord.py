@@ -44,6 +44,7 @@ extensions = [
     'resourcelinks',
     'nitpick_file_ignorer',
     'colour_preview',
+    'event_replace',
 ]
 
 autodoc_member_order = 'bysource'

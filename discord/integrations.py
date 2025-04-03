@@ -134,6 +134,8 @@ class Integration:
 
         Deletes the integration.
 
+        .. event:: on_integration_update on_guild_integrations_update
+
         You must have :attr:`~Permissions.manage_guild` to do this.
 
         Parameters
@@ -229,6 +231,8 @@ class StreamIntegration(Integration):
         """|coro|
 
         Edits the integration.
+
+        .. event:: on_integration_update on_guild_integrations_update
 
         You must have :attr:`~Permissions.manage_guild` to do this.
 

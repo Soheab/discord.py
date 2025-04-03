@@ -826,6 +826,8 @@ class Member(discord.abc.Messageable, _UserTag):
 
         All parameters are optional.
 
+        .. event:: on_member_update on_voice_state_update
+
         .. versionchanged:: 1.1
             Can now pass ``None`` to ``voice_channel`` to kick a member from voice.
 

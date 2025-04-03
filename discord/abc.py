@@ -851,6 +851,8 @@ class GuildChannel:
 
         Deletes the channel.
 
+        .. event:: on_guild_channel_delete
+
         You must have :attr:`~discord.Permissions.manage_channels` to do this.
 
         Parameters
@@ -1262,6 +1264,8 @@ class GuildChannel:
 
         Creates an instant invite from a text or voice channel.
 
+        .. event:: on_invite_create
+
         You must have :attr:`~discord.Permissions.create_instant_invite` to do this.
 
         Parameters
@@ -1496,6 +1500,8 @@ class Messageable:
         parameter should be used with a :class:`list` of :class:`~discord.Embed` objects.
         **Specifying both parameters will lead to an exception**.
 
+        .. event:: on_message
+
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
@@ -1659,6 +1665,8 @@ class Messageable:
         the destination for an indefinite period of time, or 10 seconds if the context manager
         is called using ``await``.
 
+        .. event:: on_typing
+
         Example Usage: ::
 
             async with channel.typing():
@@ -1678,6 +1686,10 @@ class Messageable:
 
         .. versionchanged:: 2.0
             Added functionality to ``await`` the context manager to send a typing indicator for 10 seconds.
+
+        .. seealso::
+            :func:`~discord.on_typing`
+                The event that is called when a typing indicator is sent.
         """
         return Typing(self)
 
@@ -1938,6 +1950,8 @@ class Connectable(Protocol):
         your connection to the voice server.
 
         This requires :attr:`~discord.Intents.voice_states`.
+
+        .. event:: on_voice_state_update
 
         Parameters
         -----------

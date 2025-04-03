@@ -418,6 +418,8 @@ class SyncWebhookMessage(Message):
     ) -> SyncWebhookMessage:
         """Edits the message.
 
+        .. event:: on_message_edit
+
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
@@ -521,6 +523,8 @@ class SyncWebhookMessage(Message):
 
     def delete(self, *, delay: Optional[float] = None) -> None:
         """Deletes the message.
+
+        .. event:: on_message_delete
 
         Parameters
         -----------
@@ -746,6 +750,8 @@ class SyncWebhook(BaseWebhook):
     def delete(self, *, reason: Optional[str] = None, prefer_auth: bool = True) -> None:
         """Deletes this Webhook.
 
+        .. event:: on_webhooks_update
+
         Parameters
         ------------
         reason: Optional[:class:`str`]
@@ -787,6 +793,8 @@ class SyncWebhook(BaseWebhook):
         prefer_auth: bool = True,
     ) -> SyncWebhook:
         """Edits this Webhook.
+
+        .. event:: on_webhooks_update
 
         Parameters
         ------------

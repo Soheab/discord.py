@@ -449,6 +449,8 @@ class TextChannel(discord.abc.Messageable, discord.abc.GuildChannel, Hashable):
 
         Edits the channel.
 
+        .. event:: on_guild_channel_update
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         .. versionchanged:: 1.3
@@ -621,6 +623,8 @@ class TextChannel(discord.abc.Messageable, discord.abc.GuildChannel, Hashable):
         ``check``. If a ``check`` is not provided then all messages are deleted
         without discrimination.
 
+        .. event:: on_bulk_message_delete
+
         You must have :attr:`~Permissions.manage_messages` to
         delete messages even if they are your own.
         Having :attr:`~Permissions.read_message_history` is
@@ -715,6 +719,8 @@ class TextChannel(discord.abc.Messageable, discord.abc.GuildChannel, Hashable):
         """|coro|
 
         Creates a webhook for this channel.
+
+        .. event:: on_webhooks_update
 
         You must have :attr:`~.Permissions.manage_webhooks` to do this.
 
@@ -870,6 +876,8 @@ class TextChannel(discord.abc.Messageable, discord.abc.GuildChannel, Hashable):
         """|coro|
 
         Creates a thread in this text channel.
+
+        .. event:: on_thread_create
 
         To create a public thread, you must have :attr:`~discord.Permissions.create_public_threads`.
         For a private thread, :attr:`~discord.Permissions.create_private_threads` is needed instead.
@@ -1361,6 +1369,8 @@ class VocalGuildChannel(discord.abc.Messageable, discord.abc.Connectable, discor
 
         Creates a webhook for this channel.
 
+        .. event:: on_webhooks_update
+
         You must have :attr:`~.Permissions.manage_webhooks` to do this.
 
         .. versionadded:: 2.0
@@ -1544,6 +1554,8 @@ class VoiceChannel(VocalGuildChannel):
 
         Edits the channel.
 
+        .. event:: on_guild_channel_update
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         .. versionchanged:: 1.3
@@ -1558,6 +1570,7 @@ class VoiceChannel(VocalGuildChannel):
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` instead of
             ``InvalidArgument``.
+
 
         Parameters
         ----------
@@ -1802,6 +1815,8 @@ class StageChannel(VocalGuildChannel):
 
         Create a stage instance.
 
+        .. event:: on_stage_instance_create
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         .. versionadded:: 2.0
@@ -1909,6 +1924,8 @@ class StageChannel(VocalGuildChannel):
 
         Edits the channel.
 
+        .. event:: on_guild_channel_update
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         .. versionchanged:: 2.0
@@ -1923,6 +1940,7 @@ class StageChannel(VocalGuildChannel):
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` instead of
             ``InvalidArgument``.
+
 
         Parameters
         ----------
@@ -2092,6 +2110,8 @@ class CategoryChannel(discord.abc.GuildChannel, Hashable):
 
         Edits the channel.
 
+        .. event:: on_guild_channel_update
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         .. versionchanged:: 1.3
@@ -2103,6 +2123,7 @@ class CategoryChannel(discord.abc.GuildChannel, Hashable):
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
+
 
         Parameters
         ----------
@@ -2655,6 +2676,8 @@ class ForumChannel(discord.abc.GuildChannel, Hashable):
 
         Edits the forum.
 
+        .. event:: on_guild_channel_update
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         Parameters
@@ -2871,6 +2894,8 @@ class ForumChannel(discord.abc.GuildChannel, Hashable):
         You must send at least one of ``content``, ``embed``, ``embeds``, ``file``, ``files``,
         or ``view`` to create a thread in a forum, since forum channels must have a starter message.
 
+        .. event:: on_thread_create
+
         Parameters
         -----------
         name: :class:`str`
@@ -3015,6 +3040,8 @@ class ForumChannel(discord.abc.GuildChannel, Hashable):
         """|coro|
 
         Creates a webhook for this channel.
+
+        .. event:: on_webhooks_update
 
         You must have :attr:`~.Permissions.manage_webhooks` to do this.
 

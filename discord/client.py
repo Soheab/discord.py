@@ -2110,6 +2110,8 @@ class Client:
 
         Changes the client's presence.
 
+        .. event:: on_presence_update
+
         Example
         ---------
 

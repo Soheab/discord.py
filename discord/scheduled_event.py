@@ -398,6 +398,8 @@ class ScheduledEvent(Hashable):
 
         Edits the scheduled event.
 
+        .. event:: on_scheduled_event_update
+
         You must have :attr:`~Permissions.manage_events` to do this.
 
         Parameters
@@ -563,6 +565,8 @@ class ScheduledEvent(Hashable):
         """|coro|
 
         Deletes the scheduled event.
+
+        .. event:: on_scheduled_event_delete
 
         You must have :attr:`~Permissions.manage_events` to do this.
 

@@ -598,6 +598,8 @@ class Thread(Messageable, Hashable):
 
         The thread must be unarchived to be edited.
 
+        .. event:: on_thread_update
+
         Parameters
         ------------
         name: :class:`str`
@@ -768,6 +770,8 @@ class Thread(Messageable, Hashable):
 
         Adds a user to this thread.
 
+        .. event:: on_thread_member_join
+
         You must have :attr:`~Permissions.send_messages_in_threads` to add a user to a thread.
         If the thread is private and :attr:`invitable` is ``False`` then :attr:`~Permissions.manage_messages`
         is required to add a user to the thread.
@@ -790,6 +794,8 @@ class Thread(Messageable, Hashable):
         """|coro|
 
         Removes a user from this thread.
+
+        .. event:: on_thread_member_remove
 
         You must have :attr:`~Permissions.manage_threads` or be the creator of the thread to remove a user.
 
@@ -854,6 +860,8 @@ class Thread(Messageable, Hashable):
         """|coro|
 
         Deletes this thread.
+
+        .. event:: on_thread_delete
 
         You must have :attr:`~Permissions.manage_threads` to delete threads.
 

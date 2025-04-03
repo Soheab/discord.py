@@ -1269,6 +1269,8 @@ class PartialMessage(Hashable):
 
         Deletes the message.
 
+        .. event:: on_message_delete
+
         Your own messages could be deleted without any proper permissions. However to
         delete other people's messages, you must have :attr:`~Permissions.manage_messages`.
 
@@ -1469,6 +1471,8 @@ class PartialMessage(Hashable):
 
         Pins the message.
 
+        .. event:: on_guild_channel_pins_update
+
         You must have :attr:`~Permissions.manage_messages` to do
         this in a non-private channel context.
 
@@ -1498,6 +1502,8 @@ class PartialMessage(Hashable):
         """|coro|
 
         Unpins the message.
+
+        .. event:: on_guild_channel_pins_update
 
         You must have :attr:`~Permissions.manage_messages` to do
         this in a non-private channel context.
@@ -1529,6 +1535,8 @@ class PartialMessage(Hashable):
         Adds a reaction to the message.
 
         The emoji may be a unicode emoji or a custom guild :class:`Emoji`.
+
+        .. event:: on_reaction_add
 
         You must have :attr:`~Permissions.read_message_history`
         to do this. If nobody else has reacted to the message using this
@@ -1575,6 +1583,8 @@ class PartialMessage(Hashable):
         The ``member`` parameter must represent a member and meet
         the :class:`abc.Snowflake` abc.
 
+        .. event:: on_reaction_remove
+
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` instead of
             ``InvalidArgument``.
@@ -1612,6 +1622,8 @@ class PartialMessage(Hashable):
 
         The emoji may be a unicode emoji or a custom guild :class:`Emoji`.
 
+        .. event:: on_reaction_clear_emoji
+
         You must have :attr:`~Permissions.manage_messages` to do this.
 
         .. versionadded:: 1.3
@@ -1645,6 +1657,8 @@ class PartialMessage(Hashable):
 
         Removes all the reactions from the message.
 
+        .. event:: on_reaction_clear
+
         You must have :attr:`~Permissions.manage_messages` to do this.
 
         Raises
@@ -1667,6 +1681,8 @@ class PartialMessage(Hashable):
         """|coro|
 
         Creates a public thread from this message.
+
+        .. event:: on_thread_create
 
         You must have :attr:`~discord.Permissions.create_public_threads` in order to
         create a public thread from a message.
@@ -2888,6 +2904,8 @@ class Message(PartialMessage, Hashable):
         Edits the message.
 
         The content must be able to be transformed into a string via ``str(content)``.
+
+        .. event:: on_message_edit
 
         .. versionchanged:: 1.3
             The ``suppress`` keyword-only parameter was added.

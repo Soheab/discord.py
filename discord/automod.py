@@ -478,6 +478,8 @@ class AutoModRule:
 
         You must have :attr:`Permissions.manage_guild` to edit rules.
 
+        .. event:: on_automod_rule_update
+
         Parameters
         -----------
         name: :class:`str`
@@ -549,6 +551,8 @@ class AutoModRule:
         Deletes the auto moderation rule.
 
         You must have :attr:`Permissions.manage_guild` to delete rules.
+
+        .. event:: on_automod_rule_delete
 
         Parameters
         -----------

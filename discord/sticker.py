@@ -445,6 +445,8 @@ class GuildSticker(Sticker):
 
         Edits a :class:`GuildSticker` for the guild.
 
+        .. event:: on_guild_stickers_update
+
         Parameters
         -----------
         name: :class:`str`
@@ -493,6 +495,8 @@ class GuildSticker(Sticker):
         """|coro|
 
         Deletes the custom :class:`Sticker` from the guild.
+
+        .. event:: on_guild_stickers_update
 
         You must have :attr:`~Permissions.manage_emojis_and_stickers` to do this.
 

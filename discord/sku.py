@@ -348,6 +348,8 @@ class Entitlement:
 
         Deletes the entitlement.
 
+        .. event:: on_entitlement_delete
+
         Raises
         -------
         NotFound

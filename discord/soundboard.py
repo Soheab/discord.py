@@ -244,6 +244,8 @@ class SoundboardSound(BaseSoundboardSound):
 
         Edits the soundboard sound.
 
+        .. event:: on_soundboard_sound_update
+
         You must have :attr:`~Permissions.manage_expressions` to edit the sound.
         If the sound was created by the client, you must have either :attr:`~Permissions.manage_expressions`
         or :attr:`~Permissions.create_expressions`.
@@ -305,6 +307,8 @@ class SoundboardSound(BaseSoundboardSound):
         """|coro|
 
         Deletes the soundboard sound.
+
+        .. event:: on_soundboard_sound_delete
 
         You must have :attr:`~Permissions.manage_expressions` to delete the sound.
         If the sound was created by the client, you must have either :attr:`~Permissions.manage_expressions`

@@ -1425,6 +1425,8 @@ class Guild(Hashable):
 
         Creates a :class:`TextChannel` for the guild.
 
+        .. event:: on_guild_channel_create
+
         Note that you must have :attr:`~Permissions.manage_channels` to create the channel.
 
         The ``overwrites`` parameter can be used to create a 'secret'
@@ -1945,6 +1947,8 @@ class Guild(Hashable):
 
         Leaves the guild.
 
+        .. event:: on_guild_remove
+
         .. note::
 
             You cannot leave the guild that you own, you must delete it instead
@@ -2010,6 +2014,8 @@ class Guild(Hashable):
         r"""|coro|
 
         Edits the guild.
+
+        .. event:: on_guild_update
 
         You must have :attr:`~Permissions.manage_guild` to edit the guild.
 
@@ -2938,6 +2944,8 @@ class Guild(Hashable):
 
         Attaches an integration to the guild.
 
+        .. event:: on_integration_create
+
         You must have :attr:`~Permissions.manage_guild` to do this.
 
         .. versionadded:: 1.4
@@ -3268,6 +3276,8 @@ class Guild(Hashable):
         r"""|coro|
 
         Creates a scheduled event for the guild.
+
+        .. event:: on_scheduled_event_create
 
         You must have :attr:`~Permissions.manage_events` to do this.
 
@@ -3649,6 +3659,8 @@ class Guild(Hashable):
 
         All fields are optional.
 
+        .. event:: on_guild_role_create
+
         You must have :attr:`~Permissions.manage_roles` to do this.
 
         .. versionchanged:: 1.6
@@ -3872,6 +3884,8 @@ class Guild(Hashable):
 
         The user must meet the :class:`abc.Snowflake` abc.
 
+        .. event:: on_member_remove
+
         You must have :attr:`~Permissions.kick_members` to do this.
 
         Parameters
@@ -3903,6 +3917,8 @@ class Guild(Hashable):
         Bans a user from the guild.
 
         The user must meet the :class:`abc.Snowflake` abc.
+
+        .. event:: on_member_remove on_member_ban
 
         You must have :attr:`~Permissions.ban_members` to do this.
 
@@ -3957,6 +3973,8 @@ class Guild(Hashable):
         Unbans a user from the guild.
 
         The user must meet the :class:`abc.Snowflake` abc.
+
+        .. event:: on_member_unban
 
         You must have :attr:`~Permissions.ban_members` to do this.
 
@@ -4530,6 +4548,8 @@ class Guild(Hashable):
 
         .. versionadded:: 2.0
 
+        .. event:: on_automod_rule_create
+
         Parameters
         -----------
         name: :class:`str`
@@ -4735,6 +4755,9 @@ class Guild(Hashable):
         """|coro|
 
         Creates a :class:`SoundboardSound` for the guild.
+
+        .. event:: on_soundboard_sound_create
+
         You must have :attr:`Permissions.create_expressions` to do this.
 
         .. versionadded:: 2.5

@@ -135,6 +135,8 @@ class StageInstance(Hashable):
 
         Edits the stage instance.
 
+        .. event:: on_stage_instance_update
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         Parameters
@@ -174,6 +176,8 @@ class StageInstance(Hashable):
         """|coro|
 
         Deletes the stage instance.
+
+        .. event:: on_stage_instance_delete
 
         You must have :attr:`~Permissions.manage_channels` to do this.
 

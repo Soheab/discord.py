@@ -551,6 +551,8 @@ class Invite(Hashable):
 
         Revokes the instant invite.
 
+        .. event:: on_invite_delete
+
         You must have :attr:`~Permissions.manage_channels` to do this.
 
         Parameters
