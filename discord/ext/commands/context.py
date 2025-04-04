@@ -566,6 +566,8 @@ class Context(discord.abc.Messageable, Generic[BotT]):
             something similar to :meth:`~.commands.HelpCommand.command_not_found`
             this returns ``None`` on bad input or no help command.
 
+        .. event:: on_message
+
         Parameters
         ------------
         entity: Optional[Union[:class:`Command`, :class:`Cog`, :class:`str`]]
@@ -730,6 +732,8 @@ class Context(discord.abc.Messageable, Generic[BotT]):
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
 
+        .. event:: on_message
+
         Raises
         --------
         ~discord.HTTPException
@@ -778,6 +782,8 @@ class Context(discord.abc.Messageable, Generic[BotT]):
 
         .. versionchanged:: 2.0
             Added functionality to ``await`` the context manager to send a typing indicator for 10 seconds.
+
+        .. event:: on_typing
 
         Parameters
         -----------
@@ -941,6 +947,8 @@ class Context(discord.abc.Messageable, Generic[BotT]):
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
+
+        .. event:: on_message
 
         Parameters
         ------------
