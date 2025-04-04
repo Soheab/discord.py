@@ -177,6 +177,8 @@ class WelcomeScreen:
                 ]
             )
 
+        .. event:: on_guild_update
+
         Parameters
         ------------
         description: Optional[:class:`str`]

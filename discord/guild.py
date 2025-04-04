@@ -3859,6 +3859,8 @@ class Guild(Hashable):
 
         .. versionadded:: 2.0
 
+        .. event:: on_guild_update
+
         Returns
         --------
         :class:`WelcomeScreen`
