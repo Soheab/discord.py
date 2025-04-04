@@ -456,6 +456,8 @@ class Thread(Messageable, Hashable):
 
         You must have :attr:`~Permissions.manage_messages` to do this.
 
+        .. event:: on_bulk_message_delete
+
         Parameters
         -----------
         messages: Iterable[:class:`abc.Snowflake`]
@@ -525,6 +527,8 @@ class Thread(Messageable, Hashable):
 
             deleted = await thread.purge(limit=100, check=is_me)
             await thread.send(f'Deleted {len(deleted)} message(s)')
+
+        .. event:: on_bulk_message_delete
 
         Parameters
         -----------
@@ -679,6 +683,8 @@ class Thread(Messageable, Hashable):
 
         .. versionadded:: 2.1
 
+        .. event:: on_thread_update
+
         Parameters
         -----------
         \*tags: :class:`abc.Snowflake`
@@ -712,6 +718,8 @@ class Thread(Messageable, Hashable):
 
         .. versionadded:: 2.1
 
+        .. event:: on_thread_update
+
         Parameters
         -----------
         \*tags: :class:`abc.Snowflake`
@@ -744,6 +752,8 @@ class Thread(Messageable, Hashable):
         You must have :attr:`~Permissions.send_messages_in_threads` to join a thread.
         If the thread is private, :attr:`~Permissions.manage_threads` is also needed.
 
+        .. event:: on_thread_member_join
+
         Raises
         -------
         Forbidden
@@ -758,6 +768,8 @@ class Thread(Messageable, Hashable):
 
         Leaves this thread.
 
+        .. event:: on_thread_member_remove
+
         Raises
         -------
         HTTPException
@@ -770,11 +782,11 @@ class Thread(Messageable, Hashable):
 
         Adds a user to this thread.
 
-        .. event:: on_thread_member_join
-
         You must have :attr:`~Permissions.send_messages_in_threads` to add a user to a thread.
         If the thread is private and :attr:`invitable` is ``False`` then :attr:`~Permissions.manage_messages`
         is required to add a user to the thread.
+
+        .. event:: on_thread_member_join
 
         Parameters
         -----------
@@ -795,9 +807,9 @@ class Thread(Messageable, Hashable):
 
         Removes a user from this thread.
 
-        .. event:: on_thread_member_remove
-
         You must have :attr:`~Permissions.manage_threads` or be the creator of the thread to remove a user.
+
+        .. event:: on_thread_member_remove
 
         Parameters
         -----------
@@ -861,9 +873,9 @@ class Thread(Messageable, Hashable):
 
         Deletes this thread.
 
-        .. event:: on_thread_delete
-
         You must have :attr:`~Permissions.manage_threads` to delete threads.
+
+        .. event:: on_thread_delete
 
         Parameters
         -----------

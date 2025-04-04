@@ -809,8 +809,6 @@ class WebhookMessage(Message):
 
         Edits the message.
 
-        .. event:: on_message_edit
-
         .. versionadded:: 1.6
 
         .. versionchanged:: 2.0
@@ -819,6 +817,8 @@ class WebhookMessage(Message):
         .. versionchanged:: 2.0
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_message_edit
 
         Parameters
         ------------
@@ -882,6 +882,8 @@ class WebhookMessage(Message):
 
         .. versionadded:: 2.0
 
+        .. event:: on_message_edit
+
         Parameters
         -----------
         \*files: :class:`File`
@@ -907,6 +909,8 @@ class WebhookMessage(Message):
         Removes attachments from the message.
 
         .. versionadded:: 2.0
+
+        .. event:: on_message_edit
 
         Parameters
         -----------
@@ -1489,6 +1493,8 @@ class Webhook(BaseWebhook):
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
 
+        .. event:: on_webhooks_update
+
         Parameters
         ------------
         name: Optional[:class:`str`]
@@ -1692,6 +1698,8 @@ class Webhook(BaseWebhook):
         .. versionchanged:: 2.0
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_message
 
         Parameters
         ------------
@@ -1965,6 +1973,8 @@ class Webhook(BaseWebhook):
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
 
+        .. event:: on_message_edit
+
         Parameters
         ------------
         message_id: :class:`int`
@@ -2073,6 +2083,8 @@ class Webhook(BaseWebhook):
         .. versionchanged:: 2.0
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_message_delete
 
         Parameters
         ------------

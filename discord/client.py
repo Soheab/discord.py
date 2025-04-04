@@ -2110,8 +2110,6 @@ class Client:
 
         Changes the client's presence.
 
-        .. event:: on_presence_update
-
         Example
         ---------
 
@@ -2126,6 +2124,8 @@ class Client:
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_presence_update
 
         Parameters
         ----------

@@ -650,6 +650,8 @@ class Poll:
 
         Ends the poll.
 
+        .. event:: on_message_edit
+
         Raises
         ------
         ClientException

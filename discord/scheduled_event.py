@@ -204,6 +204,8 @@ class ScheduledEvent(Hashable):
 
             await event.edit(status=EventStatus.active)
 
+        .. event:: on_scheduled_event_update
+
         Parameters
         -----------
         reason: Optional[:class:`str`]
@@ -239,6 +241,8 @@ class ScheduledEvent(Hashable):
 
             await event.edit(status=EventStatus.completed)
 
+        .. event:: on_scheduled_event_update
+
         Parameters
         -----------
         reason: Optional[:class:`str`]
@@ -273,6 +277,8 @@ class ScheduledEvent(Hashable):
         .. code-block:: python3
 
             await event.edit(status=EventStatus.cancelled)
+
+        .. event:: on_scheduled_event_update
 
         Parameters
         -----------
@@ -398,9 +404,9 @@ class ScheduledEvent(Hashable):
 
         Edits the scheduled event.
 
-        .. event:: on_scheduled_event_update
-
         You must have :attr:`~Permissions.manage_events` to do this.
+
+        .. event:: on_scheduled_event_update
 
         Parameters
         -----------
@@ -566,9 +572,9 @@ class ScheduledEvent(Hashable):
 
         Deletes the scheduled event.
 
-        .. event:: on_scheduled_event_delete
-
         You must have :attr:`~Permissions.manage_events` to do this.
+
+        .. event:: on_scheduled_event_delete
 
         Parameters
         -----------

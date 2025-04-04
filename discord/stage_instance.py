@@ -135,9 +135,9 @@ class StageInstance(Hashable):
 
         Edits the stage instance.
 
-        .. event:: on_stage_instance_update
-
         You must have :attr:`~Permissions.manage_channels` to do this.
+
+        .. event:: on_stage_instance_update
 
         Parameters
         -----------
@@ -177,9 +177,9 @@ class StageInstance(Hashable):
 
         Deletes the stage instance.
 
-        .. event:: on_stage_instance_delete
-
         You must have :attr:`~Permissions.manage_channels` to do this.
+
+        .. event:: on_stage_instance_delete
 
         Parameters
         -----------

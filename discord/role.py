@@ -430,8 +430,6 @@ class Role(Hashable):
 
         Edits the role.
 
-        .. event:: on_guild_role_update
-
         You must have :attr:`~Permissions.manage_roles` to do this.
 
         All fields are optional.
@@ -448,6 +446,8 @@ class Role(Hashable):
         .. versionchanged:: 2.0
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_guild_role_update
 
         Parameters
         -----------
@@ -559,6 +559,8 @@ class Role(Hashable):
 
         .. versionadded:: 2.5
 
+        .. event:: on_guild_role_update
+
         Parameters
         -----------
         beginning: :class:`bool`
@@ -635,9 +637,9 @@ class Role(Hashable):
 
         Deletes the role.
 
-        .. event:: on_guild_role_delete
-
         You must have :attr:`~Permissions.manage_roles` to do this.
+
+        .. event:: on_guild_role_delete
 
         Parameters
         -----------

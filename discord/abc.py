@@ -851,9 +851,9 @@ class GuildChannel:
 
         Deletes the channel.
 
-        .. event:: on_guild_channel_delete
-
         You must have :attr:`~discord.Permissions.manage_channels` to do this.
+
+        .. event:: on_guild_channel_delete
 
         Parameters
         -----------
@@ -946,6 +946,7 @@ class GuildChannel:
             This function will now raise :exc:`TypeError` instead of
             ``InvalidArgument``.
 
+        .. event:: on_guild_channel_update
 
         Parameters
         -----------
@@ -1045,6 +1046,8 @@ class GuildChannel:
 
         .. versionadded:: 1.1
 
+        .. event:: on_guild_channel_create
+
         Parameters
         ------------
         name: Optional[:class:`str`]
@@ -1139,6 +1142,8 @@ class GuildChannel:
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
+
+        .. event:: on_guild_channel_update
 
         Parameters
         ------------
@@ -1264,9 +1269,9 @@ class GuildChannel:
 
         Creates an instant invite from a text or voice channel.
 
-        .. event:: on_invite_create
-
         You must have :attr:`~discord.Permissions.create_instant_invite` to do this.
+
+        .. event:: on_invite_create
 
         Parameters
         ------------
@@ -1500,11 +1505,11 @@ class Messageable:
         parameter should be used with a :class:`list` of :class:`~discord.Embed` objects.
         **Specifying both parameters will lead to an exception**.
 
-        .. event:: on_message
-
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
+
+        .. event:: on_message
 
         Parameters
         ------------
@@ -1665,8 +1670,6 @@ class Messageable:
         the destination for an indefinite period of time, or 10 seconds if the context manager
         is called using ``await``.
 
-        .. event:: on_typing
-
         Example Usage: ::
 
             async with channel.typing():
@@ -1686,6 +1689,8 @@ class Messageable:
 
         .. versionchanged:: 2.0
             Added functionality to ``await`` the context manager to send a typing indicator for 10 seconds.
+
+        .. event:: on_typing
 
         .. seealso::
             :func:`~discord.on_typing`

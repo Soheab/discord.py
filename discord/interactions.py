@@ -490,6 +490,8 @@ class Interaction(Generic[ClientT]):
         This method is also the only way to edit the original message if
         the message sent was ephemeral.
 
+        .. event:: on_message_edit
+
         Parameters
         ------------
         content: Optional[:class:`str`]
@@ -579,6 +581,8 @@ class Interaction(Generic[ClientT]):
 
         This is a lower level interface to :meth:`InteractionMessage.delete` in case
         you do not want to fetch the message and save an HTTP request.
+
+        .. event:: on_message_delete
 
         Raises
         -------
@@ -913,6 +917,8 @@ class InteractionResponse(Generic[ClientT]):
         .. versionchanged:: 2.5
             This now returns a :class:`InteractionCallbackResponse` instance.
 
+        .. event:: on_message
+
         Parameters
         -----------
         content: Optional[:class:`str`]
@@ -1058,6 +1064,8 @@ class InteractionResponse(Generic[ClientT]):
 
         .. versionchanged:: 2.5
             This now returns a :class:`InteractionCallbackResponse` instance.
+
+        .. event:: on_message_edit
 
         Parameters
         -----------
@@ -1343,6 +1351,8 @@ class InteractionMessage(Message):
 
         Edits the message.
 
+        .. event:: on_message_edit
+
         Parameters
         ------------
         content: Optional[:class:`str`]
@@ -1418,6 +1428,8 @@ class InteractionMessage(Message):
 
         .. versionadded:: 2.0
 
+        .. event:: on_message_edit
+
         Parameters
         -----------
         \*files: :class:`File`
@@ -1444,6 +1456,8 @@ class InteractionMessage(Message):
 
         .. versionadded:: 2.0
 
+        .. event:: on_message_edit
+
         Parameters
         -----------
         \*attachments: :class:`Attachment`
@@ -1467,6 +1481,8 @@ class InteractionMessage(Message):
         """|coro|
 
         Deletes the message.
+
+        .. event:: on_message_delete
 
         Parameters
         -----------

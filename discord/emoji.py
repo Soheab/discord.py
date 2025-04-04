@@ -238,12 +238,12 @@ class Emoji(_EmojiTag, AssetMixin):
 
         Edits the custom emoji.
 
-        .. event:: on_guild_emojis_update
-
         You must have :attr:`~Permissions.manage_emojis` to do this.
 
         .. versionchanged:: 2.0
             The newly updated emoji is returned.
+
+        .. event:: on_guild_emojis_update
 
         Parameters
         -----------

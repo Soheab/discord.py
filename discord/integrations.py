@@ -134,9 +134,9 @@ class Integration:
 
         Deletes the integration.
 
-        .. event:: on_integration_update on_guild_integrations_update
-
         You must have :attr:`~Permissions.manage_guild` to do this.
+
+        .. event:: on_integration_update on_guild_integrations_update
 
         Parameters
         -----------
@@ -232,13 +232,13 @@ class StreamIntegration(Integration):
 
         Edits the integration.
 
-        .. event:: on_integration_update on_guild_integrations_update
-
         You must have :attr:`~Permissions.manage_guild` to do this.
 
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_integration_update on_guild_integrations_update
 
         Parameters
         -----------

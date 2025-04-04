@@ -142,6 +142,8 @@ class Reaction:
         The ``user`` parameter must represent a user or member and meet
         the :class:`abc.Snowflake` abc.
 
+        .. event:: on_reaction_remove
+
         Parameters
         -----------
         user: :class:`abc.Snowflake`
@@ -171,6 +173,8 @@ class Reaction:
         .. versionchanged:: 2.0
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_reaction_clear
 
         Raises
         --------

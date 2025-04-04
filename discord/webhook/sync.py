@@ -418,11 +418,11 @@ class SyncWebhookMessage(Message):
     ) -> SyncWebhookMessage:
         """Edits the message.
 
-        .. event:: on_message_edit
-
         .. versionchanged:: 2.0
             This function will now raise :exc:`TypeError` or
             :exc:`ValueError` instead of ``InvalidArgument``.
+
+        .. event:: on_message_edit
 
         Parameters
         ------------
@@ -478,6 +478,8 @@ class SyncWebhookMessage(Message):
 
         .. versionadded:: 2.0
 
+        .. event:: on_message_edit
+
         Parameters
         -----------
         \*files: :class:`File`
@@ -501,6 +503,8 @@ class SyncWebhookMessage(Message):
         r"""Removes attachments from the message.
 
         .. versionadded:: 2.0
+
+        .. event:: on_message_edit
 
         Parameters
         -----------
@@ -942,6 +946,8 @@ class SyncWebhook(BaseWebhook):
         it must be a rich embed type. You cannot mix the ``embed`` parameter with the
         ``embeds`` parameter, which must be a :class:`list` of :class:`Embed` objects to send.
 
+        .. event:: on_message
+
         Parameters
         ------------
         content: :class:`str`
@@ -1169,6 +1175,8 @@ class SyncWebhook(BaseWebhook):
 
         .. versionadded:: 1.6
 
+        .. event:: on_message_edit
+
         Parameters
         ------------
         message_id: :class:`int`
@@ -1242,6 +1250,8 @@ class SyncWebhook(BaseWebhook):
         you only have an ID.
 
         .. versionadded:: 1.6
+
+        .. event:: on_message_delete
 
         Parameters
         ------------

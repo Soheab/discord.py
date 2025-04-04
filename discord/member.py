@@ -826,13 +826,13 @@ class Member(discord.abc.Messageable, _UserTag):
 
         All parameters are optional.
 
-        .. event:: on_member_update on_voice_state_update
-
         .. versionchanged:: 1.1
             Can now pass ``None`` to ``voice_channel`` to kick a member from voice.
 
         .. versionchanged:: 2.0
             The newly updated member is now optionally returned, if applicable.
+
+        .. event:: on_member_update on_voice_state_update
 
         Parameters
         -----------
@@ -955,6 +955,8 @@ class Member(discord.abc.Messageable, _UserTag):
 
         .. versionadded:: 1.7
 
+        .. event:: on_voice_state_update
+
         Raises
         -------
         ClientException
@@ -1012,6 +1014,8 @@ class Member(discord.abc.Messageable, _UserTag):
 
         This raises the same exceptions as :meth:`edit`.
 
+        .. event:: on_member_update
+
         Parameters
         -----------
         until: Optional[Union[:class:`datetime.timedelta`, :class:`datetime.datetime`]]
@@ -1047,6 +1051,8 @@ class Member(discord.abc.Messageable, _UserTag):
         You must have :attr:`~Permissions.manage_roles` to
         use this, and the added :class:`Role`\s must appear lower in the list
         of roles than the highest role of the client.
+
+        .. event:: on_member_update
 
         Parameters
         -----------
@@ -1086,6 +1092,8 @@ class Member(discord.abc.Messageable, _UserTag):
         You must have :attr:`~Permissions.manage_roles` to
         use this, and the removed :class:`Role`\s must appear lower in the list
         of roles than the highest role of the client.
+
+        .. event:: on_member_update
 
         Parameters
         -----------

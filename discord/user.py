@@ -405,8 +405,6 @@ class ClientUser(BaseUser):
 
         Edits the current profile of the client.
 
-        .. event:: on_user_update
-
         .. note::
 
             To upload an avatar, a :term:`py:bytes-like object` must be passed in that
@@ -421,6 +419,8 @@ class ClientUser(BaseUser):
         .. versionchanged:: 2.0
             This function will now raise :exc:`ValueError` instead of
             ``InvalidArgument``.
+
+        .. event:: on_user_update
 
         Parameters
         -----------

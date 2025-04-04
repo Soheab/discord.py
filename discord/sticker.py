@@ -496,9 +496,9 @@ class GuildSticker(Sticker):
 
         Deletes the custom :class:`Sticker` from the guild.
 
-        .. event:: on_guild_stickers_update
-
         You must have :attr:`~Permissions.manage_emojis_and_stickers` to do this.
+
+        .. event:: on_guild_stickers_update
 
         Parameters
         -----------
