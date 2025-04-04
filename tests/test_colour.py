@@ -118,6 +118,8 @@ def test_static_colours(value, expected):
     assert value.value == expected
 
 
+
+
 @pytest.mark.parametrize(
     ('value', 'property', 'expected'),
     [
