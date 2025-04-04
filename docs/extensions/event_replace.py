@@ -2,8 +2,9 @@ from __future__ import annotations
 from typing import Dict, Any, List
 
 from docutils import nodes
-from sphinx import addnodes
+
 import sphinx
+from sphinx import addnodes
 from sphinx.application import Sphinx
 from sphinx.util.docutils import SphinxDirective
 
