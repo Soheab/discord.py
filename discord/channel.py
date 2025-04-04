@@ -570,6 +570,8 @@ class TextChannel(discord.abc.Messageable, discord.abc.GuildChannel, Hashable):
 
             The ``reason`` keyword-only parameter was added.
 
+        .. event:: on_bulk_message_delete
+
         Parameters
         -----------
         messages: Iterable[:class:`abc.Snowflake`]
