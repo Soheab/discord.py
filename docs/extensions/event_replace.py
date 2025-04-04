@@ -56,13 +56,17 @@ class EventDirective(SphinxDirective):
             return []
 
         paragraph_node = nodes.paragraph()
-        paragraph_node += nodes.strong(text=f"This method can trigger the following event{'s' if len(events) > 1 else ''}: ")
 
-        for i, event in enumerate(events):
-            event_node = event_to_xref_node(event)
-            paragraph_node += event_node
-            if i < len(events) - 1:
-                paragraph_node += nodes.Text(", ")
+        if len(events) == 1:
+            paragraph_node += nodes.emphasis(text="This function can trigger the ")
+            paragraph_node += event_to_xref_node(events[0])
+            paragraph_node += nodes.Text(" event.")
+        else:
+            paragraph_node += nodes.emphasis(text="This function can trigger the following events: ")
+            for i, event in enumerate(events):
+                paragraph_node += event_to_xref_node(event)
+                if i < len(events) - 1:
+                    paragraph_node += nodes.Text(", ")
 
         return [paragraph_node]
 
