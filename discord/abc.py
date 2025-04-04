@@ -1691,10 +1691,6 @@ class Messageable:
             Added functionality to ``await`` the context manager to send a typing indicator for 10 seconds.
 
         .. event:: on_typing
-
-        .. seealso::
-            :func:`~discord.on_typing`
-                The event that is called when a typing indicator is sent.
         """
         return Typing(self)
 
