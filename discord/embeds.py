@@ -797,6 +797,13 @@ class Embed:
                 else:
                     result['timestamp'] = timestamp.replace(tzinfo=datetime.timezone.utc).isoformat()
 
+        try:
+            components = result.pop('components')
+            # Discord expects a single container component
+            result['component'] = components[0] if components else []
+        except KeyError:
+            pass
+
         # add in the non raw attribute ones
         if self.type:
             result['type'] = self.type
