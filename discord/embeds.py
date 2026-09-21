@@ -268,8 +268,9 @@ class Embed:
             pass
 
         # payload from a script {"type": 17, ..., "components": [...]}
-        if 'component' in data:
-            self._components = [data.get('component')]  # type: ignore
+        component = data.get('component')
+        if component:
+            self._components = [component]
 
         for attr in ('thumbnail', 'video', 'provider', 'author', 'fields', 'image', 'footer', 'components'):
             try:
@@ -344,7 +345,7 @@ class Embed:
             and self.provider == other.provider
             and self.video == other.video
             and self._flags == other._flags
-            and self._components == other._components
+            and self.components == other.components
         )
 
     @property
