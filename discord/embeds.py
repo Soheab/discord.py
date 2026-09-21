@@ -267,10 +267,9 @@ class Embed:
         except KeyError:
             pass
 
-        try:
-            self._components = [data.get('component', [])]
-        except KeyError:
-            pass
+        # payload from a script {"type": 17, ..., "components": [...]}
+        if 'component' in data:
+            self._components = [data.get('component')]  # type: ignore
 
         for attr in ('thumbnail', 'video', 'provider', 'author', 'fields', 'image', 'footer', 'components'):
             try:
