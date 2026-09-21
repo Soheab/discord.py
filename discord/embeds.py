@@ -166,12 +166,6 @@ class Embed:
     colour: Optional[Union[:class:`Colour`, :class:`int`]]
         The colour code of the embed. Aliased to ``color`` as well.
         This can be set during initialisation.
-    components: List[:class:`Container`]
-        A list of components in the embed.
-
-        Bots cannot send embeds with components, but they can be received from Discord.
-
-        .. versionadded:: 2.8
     """
 
     __slots__ = (
@@ -567,6 +561,8 @@ class Embed:
     @utils.cached_slot_property('_cs_components')
     def components(self) -> List[Container]:
         """List[:class:`discord.Container`]: Returns a list of components in the embed.
+
+        Bots cannot send embeds with components, but they can receive them.
 
         .. versionadded:: 2.8
         """
