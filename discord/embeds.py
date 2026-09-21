@@ -267,6 +267,11 @@ class Embed:
         except KeyError:
             pass
 
+        try:
+            self._components = [data.get('component', [])]
+        except KeyError:
+            pass
+
         for attr in ('thumbnail', 'video', 'provider', 'author', 'fields', 'image', 'footer', 'components'):
             try:
                 value = data[attr]
