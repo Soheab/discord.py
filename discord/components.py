@@ -1373,15 +1373,7 @@ class Container(Component):
 
     @property
     def _total_children(self) -> int:
-        total = 1
-        for child in self.children:
-            if isinstance(child, ActionRow):
-                total += len(child.children) + 1
-            elif isinstance(child, SectionComponent):
-                total += len(child.children) + 1
-            else:
-                total += 1
-        return total
+        return 1 + sum((len(c.children) + 1) if isinstance(c, (Container, SectionComponent)) else 1 for c in self.children)
 
     def to_dict(self) -> ContainerComponentPayload:
         payload: ContainerComponentPayload = {
