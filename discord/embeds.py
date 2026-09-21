@@ -31,6 +31,11 @@ from . import utils
 from .colour import Colour
 from .flags import AttachmentFlags, EmbedFlags
 
+from .components import _component_factory
+
+if TYPE_CHECKING:
+    from .components import Container
+
 # fmt: off
 __all__ = (
     'Embed',
@@ -141,8 +146,9 @@ class Embed:
         This can be set during initialisation.
         Can only be up to 256 characters.
     type: :class:`str`
-        The type of embed. Usually "rich".
+        The type of embed. Usually "rich" or "components" but can be other values as well.
         This can be set during initialisation.
+        Bots can only send "rich" embeds.
         Possible strings for embed types can be found on discord's
         :ddocs:`api docs <resources/message#embed-object-embed-types>`
     description: Optional[:class:`str`]
@@ -159,6 +165,12 @@ class Embed:
     colour: Optional[Union[:class:`Colour`, :class:`int`]]
         The colour code of the embed. Aliased to ``color`` as well.
         This can be set during initialisation.
+    components: List[:class:`Container`]
+        A list of components in the embed.
+
+        Bots cannot send embeds with components, but they can be received from Discord.
+
+        .. versionadded:: 2.8
     """
 
     __slots__ = (
@@ -176,6 +188,7 @@ class Embed:
         '_fields',
         'description',
         '_flags',
+        '_components',
     )
 
     def __init__(
@@ -195,6 +208,7 @@ class Embed:
         self.url: Optional[str] = url
         self.description: Optional[str] = description
         self._flags: int = 0
+        self._components: List[Container] = []
 
         if self.title is not None:
             self.title = str(self.title)
@@ -252,7 +266,7 @@ class Embed:
         except KeyError:
             pass
 
-        for attr in ('thumbnail', 'video', 'provider', 'author', 'fields', 'image', 'footer'):
+        for attr in ('thumbnail', 'video', 'provider', 'author', 'fields', 'image', 'footer', 'components'):
             try:
                 value = data[attr]
             except KeyError:
@@ -285,9 +299,14 @@ class Embed:
         else:
             total += len(author['name'])
 
+        components = self.components
+        if components:
+            total += components[0]._total_children
+
         return total
 
     def __bool__(self) -> bool:
+        components = self.components
         return any(
             (
                 self.title,
@@ -302,6 +321,7 @@ class Embed:
                 self.image,
                 self.provider,
                 self.video,
+                components and components[0]._total_children > 0,
             )
         )
 
@@ -321,6 +341,7 @@ class Embed:
             and self.provider == other.provider
             and self.video == other.video
             and self._flags == other._flags
+            and self._components == other._components
         )
 
     @property
@@ -537,6 +558,14 @@ class Embed:
         """
         # Lying to the type checker for better developer UX.
         return EmbedProxy(getattr(self, '_author', {}))  # type: ignore
+
+    @property
+    def components(self) -> List[Container]:
+        """List[:class:`Component`]: Returns a list of components in the embed.
+
+        .. versionadded:: 2.8
+        """
+        return [_component_factory(c) for c in getattr(self, '_components', [])]  # type: ignore
 
     def set_author(self, *, name: Any, url: Optional[Any] = None, icon_url: Optional[Any] = None) -> Self:
         """Sets the author for the embed content.
