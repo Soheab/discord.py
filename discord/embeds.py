@@ -35,6 +35,7 @@ from .components import _component_factory
 
 if TYPE_CHECKING:
     from .components import Container
+    from .types.components import ContainerComponent as ContainerComponentPayload
 
 # fmt: off
 __all__ = (
@@ -209,7 +210,7 @@ class Embed:
         self.url: Optional[str] = url
         self.description: Optional[str] = description
         self._flags: int = 0
-        self._components: List[Container] = []
+        self._components: List[ContainerComponentPayload] = []
 
         if self.title is not None:
             self.title = str(self.title)
@@ -565,7 +566,7 @@ class Embed:
 
     @utils.cached_slot_property('_cs_components')
     def components(self) -> List[Container]:
-        """List[:class:`Component`]: Returns a list of components in the embed.
+        """List[:class:`discord.Container`]: Returns a list of components in the embed.
 
         .. versionadded:: 2.8
         """
