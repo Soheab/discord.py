@@ -188,6 +188,7 @@ class Embed:
         '_fields',
         'description',
         '_flags',
+        '_cs_components',
         '_components',
     )
 
@@ -299,14 +300,12 @@ class Embed:
         else:
             total += len(author['name'])
 
-        components = self.components
-        if components:
-            total += components[0]._total_children
+        if self.components:
+            total += self.components[0]._total_children
 
         return total
 
     def __bool__(self) -> bool:
-        components = self.components
         return any(
             (
                 self.title,
@@ -321,7 +320,7 @@ class Embed:
                 self.image,
                 self.provider,
                 self.video,
-                components and components[0]._total_children > 0,
+                self.components and self.components[0]._total_children > 0,
             )
         )
 
@@ -559,7 +558,7 @@ class Embed:
         # Lying to the type checker for better developer UX.
         return EmbedProxy(getattr(self, '_author', {}))  # type: ignore
 
-    @property
+    @utils.cached_slot_property('_cs_components')
     def components(self) -> List[Container]:
         """List[:class:`Component`]: Returns a list of components in the embed.
 
