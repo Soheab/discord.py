@@ -1422,8 +1422,8 @@ class GuildChannel:
         HTTPException
             Fetching the permissions failed.
         :exc:`TypeError`
-            The target is not a :class:`Member`, :class:`User`, :class:`Role`,
-            or :class:`Object` with the appropriate type.
+            The target is not a :class:`~discord.Member`, :class:`~discord.User`, :class:`~discord.Role`,
+            or :class:`~discord.Object` with the appropriate type.
 
         Returns
         --------
