@@ -4995,7 +4995,7 @@ class Guild(Hashable):
         :class:`Permissions`
             The permissions for the member or role.
         """
-        if isinstance(target, (Member, User)) or isinstance(target, Object) and target.type in (User, Member):
+        if isinstance(target, (Member, User)) or isinstance(target, Object) and target.type in (Member, User):
             data = await self._state.http.get_guild_member_permissions(self.id, target.id)
         elif isinstance(target, Role) or isinstance(target, Object) and target.type is Role:
             data = await self._state.http.get_guild_role_permissions(self.id, target.id)
