@@ -1456,7 +1456,7 @@ class HTTPClient:
         self, channel_id: Snowflake, user_id: Snowflake, *, implicit: bool = True
     ) -> Response[channel.ChannelPermissions]:
         return self.request(
-            Route('GET', '/channels/{channel_id}/permissions//member/{user_id}', channel_id=channel_id, user_id=user_id),
+            Route('GET', '/channels/{channel_id}/permissions/member/{user_id}', channel_id=channel_id, user_id=user_id),
             params={'implicit': int(implicit)},
         )
 
